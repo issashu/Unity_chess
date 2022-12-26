@@ -17,8 +17,8 @@ public class ChessBoardManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        var Board = new GameObject("GameBoard");
-        Board.AddComponent<GameBoard.GameBoard>();
+        var gameBoard = new GameObject("GameBoard");
+        gameBoard.AddComponent<GameBoard.GameBoard>();
     }
 
     // Update is called once per frame

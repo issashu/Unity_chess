@@ -9,13 +9,8 @@ namespace GameBoard
         [SerializeField]private int _boardWidth;
         private GameObject[,] _boardMatrix;
 
-        public ref GameObject[,] BoardMatrix
-        {
-            get
-            {
-                return ref _boardMatrix;
-            }
-        }
+        public ref GameObject[,] BoardMatrix => ref _boardMatrix;
+       
 
         private void Awake()
         {
@@ -25,18 +20,32 @@ namespace GameBoard
             
             var tmp = new GameObject("Tile");
             tmp.AddComponent<BoardTile>();
+            tmp.AddComponent<SpriteRenderer>();
             
             for (var i = 0; i < this._boardHeight; i++)
             {
                 for (var j = 0; j < this._boardWidth; j++)
                 {
-                    this._boardMatrix[i, j] = Instantiate(tmp, transform);
-                    this._boardMatrix[i, j].name = "Tile: " + i + " " + j;
+                    SetupTileObject(i, j, ref tmp);
                 }
             }
             
             Destroy(tmp);
         }
 
+        private void SetupTileObject(int boardX, int boardY, ref GameObject objectToFill)
+        {
+            ref var tmpObject = ref this._boardMatrix[boardX, boardY];
+            
+            tmpObject = Instantiate(objectToFill, transform);
+            tmpObject.name = "Tile: " + boardX + " " + boardY;
+            tmpObject.GetComponent<SpriteRenderer>().sprite = tmpObject.GetComponent<BoardTile>().TileSPrite;
+            var height = tmpObject.GetComponent<BoardTile>().TileHeight;
+            var width = tmpObject.GetComponent<BoardTile>().TileWidth;
+            
+            var xAxisPosition = (boardX * height + boardY * width) / 2f;
+            var yAxisPosition = (boardX * height - boardY * width) / 4f;
+            tmpObject.transform.position = new Vector2(xAxisPosition, yAxisPosition);
+        }
     }
 }
