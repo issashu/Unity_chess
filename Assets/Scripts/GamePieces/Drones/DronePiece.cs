@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace GamePieces.Humans
+namespace GamePieces.Drones
 {
-    public class GruntPiece : BasePiece
-    
+    public class DronePiece : BasePiece
     {
-        protected override void Awake()
+        protected virtual void Awake()
         {
             this.maxMoveDistance = 1;
             this.maxAttackDistance = 7;
@@ -14,24 +13,25 @@ namespace GamePieces.Humans
             this.attackPower = 1;
             this.hitPoints = 2;
             this.isAlive = true;
-            this.gameSprite = Resources.Load<Sprite>("Sprites/Humans/Grunt");
-            
+            this.gameSprite = Resources.Load<Sprite>("Sprites/Drones/Drone");
+
             this.allowedMoveDirections = new Dictionary<string, bool>
             {
-                {"N", true}, {"NE", false}, {"E", true}, {"SE", false},
-                {"S", true}, {"SW", false}, {"W", true}, {"NW", false},
+                {"N", false}, {"NE", false}, {"E", false}, {"SE", false},
+                {"S", true}, {"SW", false}, {"W", false}, {"NW", false}
             };
-            
+
             this.allowedAttackDirections = new Dictionary<string, bool>
             {
                 {"N", false}, {"NE", true}, {"E", false}, {"SE", true},
-                {"S", false}, {"SW", true}, {"W", false}, {"NW", true},
+                {"S", false}, {"SW", true}, {"W", false}, {"NW", true}
             };
-            
+
             this.allowedActions = new Dictionary<string, bool>
             {
                 {"move", true}, {"attack", true}
             };
         }
+        
     }
 }

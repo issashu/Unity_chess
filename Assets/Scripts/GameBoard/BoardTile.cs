@@ -13,9 +13,9 @@ namespace GameBoard
 
         private void Awake()
         {
-            this._tileSprite = Resources.Load<Sprite>("Sprites/Tile1");
-            this._tileHeight = 0.5f;
-            this._tileWidth = 0.5f;
+            this._tileSprite = Resources.Load<Sprite>("Sprites/BoardTiles/Board Tile");
+            this._tileHeight = 3f;
+            this._tileWidth = 3f;
             this._isPassable = true;
         }
 
