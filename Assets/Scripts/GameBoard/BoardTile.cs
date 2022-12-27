@@ -14,14 +14,15 @@ namespace GameBoard
         private void Awake()
         {
             this._tileSprite = Resources.Load<Sprite>("Sprites/BoardTiles/Board Tile");
-            this._tileHeight = 3f;
-            this._tileWidth = 3f;
+            this._tileHeight = Defines.GameBoardConstants.TILE_HEIGHT;
+            this._tileWidth = Defines.GameBoardConstants.TILE_WIDTH;
             this._isPassable = true;
         }
 
         /*---------------PUBLIC----------------*/
         public float TileHeight => _tileHeight;
         public float TileWidth => _tileWidth;
-        public Sprite TileSPrite => _tileSprite;
+        public Sprite TileSprite => _tileSprite;
+        public bool IsTileTraversable => _isPassable;
     }
 }

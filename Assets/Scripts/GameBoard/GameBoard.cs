@@ -1,3 +1,4 @@
+using Defines;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -14,19 +15,20 @@ namespace GameBoard
 
         private void Awake()
         {
-            this._boardHeight = 8;
-            this._boardWidth = 8;
+            this._boardHeight = Defines.GameBoardConstants.BOARD_HEIGHT;
+            this._boardWidth = Defines.GameBoardConstants.BOARD_WIDTH;
             this._boardMatrix = new GameObject[this._boardHeight, this._boardWidth];
             
             var tmp = new GameObject("Tile");
             tmp.AddComponent<BoardTile>();
             tmp.AddComponent<SpriteRenderer>();
+            tmp.AddComponent<BoxCollider2D>();
             
-            for (var i = 0; i < this._boardHeight; i++)
+            for (var x = 0; x < this._boardHeight; x++)
             {
-                for (var j = 0; j < this._boardWidth; j++)
+                for (var y = 0; y < this._boardWidth; y++)
                 {
-                    SetupTileObject(i, j, ref tmp);
+                    SetupTileObject(x, y, ref tmp);
                 }
             }
             
@@ -39,7 +41,11 @@ namespace GameBoard
             
             tmpObject = Instantiate(objectToFill, transform);
             tmpObject.name = "Tile: " + boardX + " " + boardY;
-            tmpObject.GetComponent<SpriteRenderer>().sprite = tmpObject.GetComponent<BoardTile>().TileSPrite;
+            tmpObject.GetComponent<SpriteRenderer>().sprite = tmpObject.GetComponent<BoardTile>().TileSprite;
+            tmpObject.GetComponent<Collider2D>().isTrigger = true;
+            tmpObject.GetComponent<BoxCollider2D>().size = new Vector2(1.21f, 0.78f);
+            tmpObject.layer = GameBoardConstants.BOARD_TILES_LAYER;
+            
             var height = tmpObject.GetComponent<BoardTile>().TileHeight;
             var width = tmpObject.GetComponent<BoardTile>().TileWidth;
             

@@ -5,7 +5,7 @@ namespace GamePieces.Drones
 {
     public class DronePiece : BasePiece
     {
-        protected virtual void Awake()
+        protected override void Awake()
         {
             this.maxMoveDistance = 1;
             this.maxAttackDistance = 7;

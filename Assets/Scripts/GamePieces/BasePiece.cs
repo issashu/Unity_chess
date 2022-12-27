@@ -48,6 +48,12 @@ namespace GamePieces
             
         }
         
+        // TODO: Currently unit teleports to new location. Make it slide there.
+        protected virtual void MovePiece(Vector2 targetLocation)
+        {
+            this.transform.position = targetLocation;
+        }
+        
         protected virtual int DamageDone()
         {
             return this.attackPower;
@@ -59,6 +65,7 @@ namespace GamePieces
         public int MaxAttackDistance => maxAttackDistance;
         public int HitPoints => hitPoints;
         public bool IsUnitAlive => isAlive;
+        public Sprite UnitSprite => gameSprite;
         public Dictionary<string, bool> AllowedMoveDirections => allowedMoveDirections;
         public Dictionary<string, bool> AllowedAttackDirection => allowedAttackDirections;
         public Dictionary<string, bool> AllowedActions => allowedActions;
