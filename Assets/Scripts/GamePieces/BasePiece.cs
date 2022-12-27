@@ -9,6 +9,7 @@ namespace GamePieces
         [SerializeField] protected int maxAttackDistance;
         [SerializeField] protected int attackPower;
         [SerializeField] protected int hitPoints;
+        [SerializeField] protected Sprite gameSprite;
         protected Dictionary<string, bool> allowedDirections;
         protected Dictionary<string, bool> allowedActions;
 
@@ -35,11 +36,19 @@ namespace GamePieces
         {
             
         }
-
-        protected virtual int AttackTarget()
+        
+        protected virtual int DamageDone()
         {
             return this.attackPower;
         }
+        
+        /*-----------PUBLIC-------------*/
+
+        public int MaxMoveDistance => maxMoveDistance;
+        public int MaxAttackDistance => maxAttackDistance;
+        public int HitPoints => hitPoints;
+        public Dictionary<string, bool> AllowedDistance => allowedDirections;
+        public Dictionary<string, bool> AllowedActions => allowedActions;
     }
 }
 
