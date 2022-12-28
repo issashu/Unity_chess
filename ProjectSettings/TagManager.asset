@@ -11,12 +11,12 @@ TagManager:
   - 
   - Water
   - UI
-  - 
   - BoardTiles
-  - 
-  - 
-  - 
   - GamePieces
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -40,4 +40,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Board
+    uniqueID: 2975752291
+    locked: 0
+  - name: GamePieces
+    uniqueID: 2603376425
     locked: 0
