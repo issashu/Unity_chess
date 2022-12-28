@@ -3,8 +3,7 @@ using UnityEngine;
 
 namespace GamePieces
 {
-    public class BasePiece : MonoBehaviour
-    {
+    public class BasePiece : MonoBehaviour  {
         [SerializeField] protected int maxMoveDistance;
         [SerializeField] protected int maxAttackDistance;
         [SerializeField] protected int numberOfAttacks;
@@ -64,6 +63,16 @@ namespace GamePieces
         protected virtual int DamageDone()
         {
             return this.attackPower;
+        }
+        
+        public virtual void AttackAction()
+        {
+            
+        }
+
+        public virtual void OnDeath()
+        {
+            
         }
         
         /*-----------PUBLIC-------------*/

@@ -1,4 +1,5 @@
 using System;
+using Defines;
 using UnityEngine;
 
 namespace Utils
@@ -25,7 +26,10 @@ namespace Utils
         //So we don't need to instantiate the class to use the methods
         public static RaycastHit2D GetMouseRealTarget()
         {
-            RaycastHit2D rayTargetFromCamera = Physics2D.GetRayIntersection(Camera.main.ScreenPointToRay(Input.mousePosition));
+            RaycastHit2D rayTargetFromCamera = Physics2D.GetRayIntersection(
+                ray: Camera.main.ScreenPointToRay(Input.mousePosition),
+                distance: float.MaxValue,
+                layerMask: (1 << 0));
 
             return rayTargetFromCamera;
         } 

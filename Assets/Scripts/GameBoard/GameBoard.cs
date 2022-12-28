@@ -42,16 +42,24 @@ namespace GameBoard
             tmpObject = Instantiate(objectToFill, transform);
             tmpObject.name = "Tile: " + boardX + " " + boardY;
             tmpObject.GetComponent<SpriteRenderer>().sprite = tmpObject.GetComponent<BoardTile>().TileSprite;
+            tmpObject.GetComponent<SpriteRenderer>().sortingLayerName = GameBoardConstants.BOARD_TILES_LAYER;
             tmpObject.GetComponent<Collider2D>().isTrigger = true;
             tmpObject.GetComponent<BoxCollider2D>().size = new Vector2(1.21f, 0.78f);
-            tmpObject.layer = GameBoardConstants.BOARD_TILES_LAYER;
             
             var height = tmpObject.GetComponent<BoardTile>().TileHeight;
             var width = tmpObject.GetComponent<BoardTile>().TileWidth;
-            
             var xAxisPosition = (boardX * height + boardY * width) / 2f;
             var yAxisPosition = (boardX * height - boardY * width) / 4f;
             tmpObject.transform.position = new Vector2(xAxisPosition, yAxisPosition);
+            tmpObject.GetComponent<BoardTile>().UpdateTileGridPosition(boardX, boardY);
+
+            Debug.Log($"Tile with coords: X:{tmpObject.GetComponent<BoardTile>().XCoordinate}; " +
+                      $"Y: {tmpObject.GetComponent<BoardTile>().YCoordinate}");
+        }
+
+        public GameObject GetTileFromMatrix(int x, int y)
+        {
+            return this._boardMatrix[x, y];
         }
     }
 }

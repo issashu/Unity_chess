@@ -21,6 +21,7 @@ namespace Managers
                 gruntPiece.AddComponent<GamePieces.Humans.GruntPiece>();
                 gruntPiece.AddComponent<SpriteRenderer>();
                 gruntPiece.GetComponent<SpriteRenderer>().sprite = gruntPiece.GetComponent<GamePieces.Humans.GruntPiece>().UnitSprite;
+                gruntPiece.GetComponent<SpriteRenderer>().sortingLayerName = GameBoardConstants.PIECES_SPRITE_LAYER;
                 gruntPiece.AddComponent<BoxCollider2D>();
                 gruntPiece.GetComponent<BoxCollider2D>().size = new Vector2(
                     gruntPiece.GetComponent<GamePieces.Humans.GruntPiece>().BoxColliderSettings["sizeX"],
@@ -28,8 +29,7 @@ namespace Managers
                 gruntPiece.GetComponent<BoxCollider2D>().offset = new Vector2(
                     gruntPiece.GetComponent<GamePieces.Humans.GruntPiece>().BoxColliderSettings["offsetX"],
                     gruntPiece.GetComponent<GamePieces.Humans.GruntPiece>().BoxColliderSettings["offsetY"]);
-                gruntPiece.layer = GameBoardConstants.PIECES_SPRITE_LAYER;
-                
+
                 int tileXPosition = Random.Range(0, GameBoardConstants.HUMANS_SPAWN_ROWS);
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
                 
@@ -50,6 +50,7 @@ namespace Managers
                 tankPiece.AddComponent<GamePieces.Humans.TankPiece>();
                 tankPiece.AddComponent<SpriteRenderer>();
                 tankPiece.GetComponent<SpriteRenderer>().sprite = tankPiece.GetComponent<GamePieces.Humans.TankPiece>().UnitSprite;
+                tankPiece.GetComponent<SpriteRenderer>().sortingLayerName = GameBoardConstants.PIECES_SPRITE_LAYER;
                 tankPiece.AddComponent<BoxCollider2D>();
                 tankPiece.GetComponent<BoxCollider2D>().size = new Vector2(
                     tankPiece.GetComponent<GamePieces.Humans.TankPiece>().BoxColliderSettings["sizeX"],
@@ -57,7 +58,7 @@ namespace Managers
                 tankPiece.GetComponent<BoxCollider2D>().offset = new Vector2(
                     tankPiece.GetComponent<GamePieces.Humans.TankPiece>().BoxColliderSettings["offsetX"],
                     tankPiece.GetComponent<GamePieces.Humans.TankPiece>().BoxColliderSettings["offsetY"]);
-                tankPiece.layer = GameBoardConstants.PIECES_SPRITE_LAYER;
+                
                 
                 int tileXPosition = Random.Range(0, GameBoardConstants.HUMANS_SPAWN_ROWS);
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
@@ -79,6 +80,7 @@ namespace Managers
                 jumpshipPiece.AddComponent<GamePieces.Humans.JumpshipPiece>();
                 jumpshipPiece.AddComponent<SpriteRenderer>();
                 jumpshipPiece.GetComponent<SpriteRenderer>().sprite = jumpshipPiece.GetComponent<GamePieces.Humans.JumpshipPiece>().UnitSprite;
+                jumpshipPiece.GetComponent<SpriteRenderer>().sortingLayerName = GameBoardConstants.PIECES_SPRITE_LAYER;
                 jumpshipPiece.AddComponent<BoxCollider2D>();
                 jumpshipPiece.GetComponent<BoxCollider2D>().size = new Vector2(
                     jumpshipPiece.GetComponent<GamePieces.Humans.JumpshipPiece>().BoxColliderSettings["sizeX"],
@@ -86,7 +88,6 @@ namespace Managers
                 jumpshipPiece.GetComponent<BoxCollider2D>().offset = new Vector2(
                     jumpshipPiece.GetComponent<GamePieces.Humans.JumpshipPiece>().BoxColliderSettings["offsetX"],
                     jumpshipPiece.GetComponent<GamePieces.Humans.JumpshipPiece>().BoxColliderSettings["offsetY"]);
-                jumpshipPiece.layer = GameBoardConstants.PIECES_SPRITE_LAYER;
 
                 int tileXPosition = Random.Range(0, GameBoardConstants.HUMANS_SPAWN_ROWS);
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
