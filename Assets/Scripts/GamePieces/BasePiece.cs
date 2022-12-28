@@ -12,6 +12,7 @@ namespace GamePieces
         [SerializeField] protected int hitPoints;
         [SerializeField] protected bool isAlive;
         [SerializeField] protected Sprite gameSprite;
+        protected Dictionary<string, float> boxColliderSettings;
         protected Dictionary<string, bool> allowedMoveDirections;
         protected Dictionary<string, bool> allowedAttackDirections;
         protected Dictionary<string, bool> allowedActions;
@@ -41,6 +42,12 @@ namespace GamePieces
             {
                 {"move", true}, {"attack", true}
             };
+
+            this.boxColliderSettings = new Dictionary<string, float>
+            {
+                {"offsetX", 0.00f}, {"offsetY", 0.0f},
+                {"sizeX", 0.0f}, {"sizeY", 0.0f}
+            };
         }
 
         protected virtual void HighlightMovePath()
@@ -69,6 +76,7 @@ namespace GamePieces
         public Dictionary<string, bool> AllowedMoveDirections => allowedMoveDirections;
         public Dictionary<string, bool> AllowedAttackDirection => allowedAttackDirections;
         public Dictionary<string, bool> AllowedActions => allowedActions;
+        public Dictionary<string, float> BoxColliderSettings => boxColliderSettings;
     }
 }
 

@@ -31,6 +31,12 @@ namespace GamePieces.Humans
             {
                 {"move", true}, {"attack", true}
             };
+            
+            this.boxColliderSettings = new Dictionary<string, float>
+            {
+                {"offsetX", 0.01f}, {"offsetY", 1.04f},
+                {"sizeX", 1.06f},   {"sizeY", 1.82f}
+            };
         }
     }
 }
