@@ -12,7 +12,7 @@ namespace GameBoard
         private float _tileWidth;
         [SerializeField] private bool _isPassable;
         private Point _objectCoordinates;
-        private BasePiece _occupyingUnit;
+        private GameObject _occupyingUnit;
 
         private void Awake()
         {
@@ -26,10 +26,14 @@ namespace GameBoard
         public void UpdateTileGridPosition(int x, int y)
         {
             _objectCoordinates = new Point(x, y);
-            Debug.Log(_objectCoordinates.ToString());
         }
 
-        public void SetOccupant(BasePiece Occupant)
+        public void ChangeTileColorTint(Color coloToChangeTo)
+        {
+            this.GetComponent<SpriteRenderer>().material.color = coloToChangeTo;
+        }
+
+        public void SetOccupant(GameObject Occupant)
         {
             this._occupyingUnit = Occupant;
         }
@@ -46,6 +50,6 @@ namespace GameBoard
         public int XCoordinate => _objectCoordinates.x;
         public int YCoordinate => _objectCoordinates.y;
 
-        public BasePiece UnitOnTile => _occupyingUnit;
+        public GameObject TileOccupant => _occupyingUnit;
     }
 }

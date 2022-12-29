@@ -1,5 +1,9 @@
 using System;
 using Defines;
+using GameBoard;
+using GamePieces;
+using Utils;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Utils
@@ -7,8 +11,8 @@ namespace Utils
     public class MouseEventUtils : MonoBehaviour
     {
         private const int _leftMouseButton = 0;
-        
         private RaycastHit2D _target;
+        private GameObject selectedGameObject;
 
         private void Awake()
         {
@@ -20,7 +24,10 @@ namespace Utils
             if (Input.GetMouseButtonDown(_leftMouseButton))
             {
                 _target = GetMouseRealTarget();
-                Debug.Log(_target.transform);
+                var extractedObject = ExtractTargetedObject(_target);
+                Debug.Log(extractedObject);
+                HandleSelectedObject(extractedObject);
+                
             } 
         }
         //So we don't need to instantiate the class to use the methods
@@ -32,6 +39,30 @@ namespace Utils
                 layerMask: (1 << 0));
 
             return rayTargetFromCamera;
-        } 
+        }
+
+        private GameObject ExtractTargetedObject(RaycastHit2D rayTarget)
+        {
+            return rayTarget.transform.GameObject();
+        }
+
+        public void HandleSelectedObject(GameObject clickedObject)
+        {
+            // Add check for current or opposing team
+            if (clickedObject.TryGetComponent<BasePiece>(out BasePiece gamePiece))
+            {
+                gamePiece.HighlightMovePath();
+                selectedGameObject = clickedObject;
+                return;
+            }
+
+            if (clickedObject.TryGetComponent<BoardTile>(out BoardTile tile) && selectedGameObject)
+            {
+                var moveLocation = ConversionUtils.WorldPositionFromCoordinates(tile.XCoordinate, tile.YCoordinate);
+                selectedGameObject.GetComponent<BasePiece>().MoveAction(moveLocation);
+            }
+            
+            // TODO: Add logic for selecting enemy unit and attacking
+        }
     }
 }

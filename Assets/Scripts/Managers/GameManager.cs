@@ -1,8 +1,11 @@
 using System.Collections.Generic;
 using System.Drawing;
 using Defines;
+using GameBoard;
+using GamePieces.Humans;
 using Unity.VisualScripting;
 using UnityEngine;
+using Color = UnityEngine.Color;
 
 namespace Managers
 {
@@ -32,8 +35,9 @@ namespace Managers
 
                 int tileXPosition = Random.Range(0, GameBoardConstants.HUMANS_SPAWN_ROWS);
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
-                
-                var tilePosition = GameObject.Find("Tile: " + tileXPosition + " " + tileYPosition).transform.position;
+                var chosenTile = GameObject.Find("Tile: " + tileXPosition + " " + tileYPosition);
+                var tilePosition = chosenTile.transform.position;
+                chosenTile.GetComponent<BoardTile>().SetOccupant(gruntPiece);
                 
                 // TODO: Add a method in utils or something for transform position since we will have quite a bit. C# ay can't directly access structs...cop by value default...
                 var piecePosition = gruntPiece.transform;
@@ -59,16 +63,19 @@ namespace Managers
                     tankPiece.GetComponent<GamePieces.Humans.TankPiece>().BoxColliderSettings["offsetX"],
                     tankPiece.GetComponent<GamePieces.Humans.TankPiece>().BoxColliderSettings["offsetY"]);
                 
-                
                 int tileXPosition = Random.Range(0, GameBoardConstants.HUMANS_SPAWN_ROWS);
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
                 
-                var tilePosition = GameObject.Find("Tile: " + tileXPosition + " " + tileYPosition).transform.position;
-                
+                // TODO: Make methjod to grab tile by name. We use it multiple times 
+                var chosenTile = GameObject.Find("Tile: " + tileXPosition + " " + tileYPosition);
+                chosenTile.GetComponent<BoardTile>().SetOccupant(tankPiece);
+                var tilePosition = chosenTile.transform.position;
+
                 // TODO: Add a method in utils or something for transform position since we will have quite a bit. C# ay can't directly access structs...cop by value default...
                 var piecePosition = tankPiece.transform;
-                piecePosition.position = new Vector2(tilePosition.x, tilePosition.y); 
-                
+                piecePosition.position = new Vector2(tilePosition.x, tilePosition.y);
+                tankPiece.GetComponent<TankPiece>().SetCurrentPosition(tileXPosition, tileYPosition);
+
                 _spawnedUnits.Add(tankPiece);
             }
         }
@@ -91,8 +98,9 @@ namespace Managers
 
                 int tileXPosition = Random.Range(0, GameBoardConstants.HUMANS_SPAWN_ROWS);
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
-                
-                var tilePosition = GameObject.Find("Tile: " + tileXPosition + " " + tileYPosition).transform.position;
+                var chosenTile = GameObject.Find("Tile: " + tileXPosition + " " + tileYPosition);
+                var tilePosition = chosenTile.transform.position;
+                chosenTile.GetComponent<BoardTile>().SetOccupant(jumpshipPiece);
                 
                 // TODO: Add a method in utils or something for transform position since we will have quite a bit. C# ay can't directl access structs...cop by value default...
                 var piecePosition = jumpshipPiece.transform;
@@ -116,12 +124,19 @@ namespace Managers
             SetupHumanGruntPieces();
             SetupHumanTankPieces();
             SetupHumanJumpshipPieces();
+
+           /* foreach (var tile in gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix)
+            {
+                var result = tile.GetComponent<BoardTile>().TileOccupant != null ? Color.red : Color.green;
+                tile.GetComponent<BoardTile>().ChangeTileColorTint(result);
+            } */
         }
 
         // Update is called once per frame
         void Update()
         {
-           // Debug.Log(Input.mousePosition);
+            
+            
         }
     }
 }

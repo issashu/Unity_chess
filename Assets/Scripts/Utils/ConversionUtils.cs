@@ -8,7 +8,7 @@ namespace Utils
 {
     public class ConversionUtils
     {
-        public Vector2 WorldPositionFromCoordinates(int x, int y, int objectSize=1)
+        public static Vector2 WorldPositionFromCoordinates(int x, int y, int objectSize=1)
         {
             return new Vector2(x, y) * objectSize;
         }

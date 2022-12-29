@@ -19,10 +19,6 @@ namespace Managers
             var tileToSpawn = GameObject.Find("Tile: 0 0");
             
             
-            
-            
-            
-            
             _spawnedUnits.Add(gruntPiece);
             
             var tankPiece = new GameObject("Tank");
