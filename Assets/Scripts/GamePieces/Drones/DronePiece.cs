@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 namespace GamePieces.Drones
 {
@@ -9,29 +10,25 @@ namespace GamePieces.Drones
         {
             this.maxMoveDistance = 1;
             this.maxAttackDistance = 7;
-            this.numberOfAttacks = 1;
             this.attackPower = 1;
             this.hitPoints = 2;
             this.isAlive = true;
             this.gameSprite = Resources.Load<Sprite>("Sprites/Drones/Drone");
-
-            this.allowedMoveDirections = new Dictionary<string, bool>
-            {
-                {"N", false}, {"NE", false}, {"E", false}, {"SE", false},
-                {"S", true}, {"SW", false}, {"W", false}, {"NW", false}
-            };
-
-            this.allowedAttackDirections = new Dictionary<string, bool>
-            {
-                {"N", false}, {"NE", true}, {"E", false}, {"SE", true},
-                {"S", false}, {"SW", true}, {"W", false}, {"NW", true}
-            };
+            this.currentTilePosition = new Point(0, 0);
+            this.validMovesFromPosition = new List<Point>();
+            this.movesXAxis = new [] {-1};
+            this.movesYAxis = new [] { 0};
 
             this.allowedActions = new Dictionary<string, bool>
             {
                 {"move", true}, {"attack", true}
             };
+            
+            this.boxColliderSettings = new Dictionary<string, float>
+            {
+                {"offsetX", 0.01f}, {"offsetY", 1.04f},
+                {"sizeX", 1.06f},   {"sizeY", 1.82f}
+            };
         }
-        
     }
 }

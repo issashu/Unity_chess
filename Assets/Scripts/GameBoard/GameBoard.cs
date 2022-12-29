@@ -61,5 +61,13 @@ namespace GameBoard
         {
             return this._boardMatrix[x, y];
         }
+
+        public void ClearBoardColors()
+        {
+            foreach (var tile in _boardMatrix)
+            {
+                tile.GetComponent<BoardTile>().ChangeTileColorTint(Color.white);
+            }
+        }
     }
 }

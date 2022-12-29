@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 namespace GamePieces.Humans
 {
@@ -10,24 +11,15 @@ namespace GamePieces.Humans
         {
             this.maxMoveDistance = 1;
             this.maxAttackDistance = 7;
-            this.numberOfAttacks = 1;
             this.attackPower = 1;
             this.hitPoints = 2;
             this.isAlive = true;
+            this.currentTilePosition = new Point(0, 0);
             this.gameSprite = Resources.Load<Sprite>("Sprites/Humans/Grunt");
-            
-            this.allowedMoveDirections = new Dictionary<string, bool>
-            {
-                {"N", true}, {"NE", false}, {"E", true}, {"SE", false},
-                {"S", true}, {"SW", false}, {"W", true}, {"NW", false},
-            };
-            
-            this.allowedAttackDirections = new Dictionary<string, bool>
-            {
-                {"N", false}, {"NE", true}, {"E", false}, {"SE", true},
-                {"S", false}, {"SW", true}, {"W", false}, {"NW", true},
-            };
-            
+            this.validMovesFromPosition = new List<Point>();
+            this.movesXAxis = new [] {0, 1, 0, -1};
+            this.movesYAxis = new [] {1, 0, -1, 0};
+
             this.allowedActions = new Dictionary<string, bool>
             {
                 {"move", true}, {"attack", true}

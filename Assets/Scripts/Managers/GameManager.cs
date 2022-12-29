@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using Defines;
 using GameBoard;
+using GamePieces.Drones;
 using GamePieces.Humans;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Color = UnityEngine.Color;
 
 namespace Managers
@@ -12,7 +14,8 @@ namespace Managers
     public class GameManager : MonoBehaviour
     {
         //PRIVATE:
-        [SerializeField] private List<GameObject> _spawnedUnits;
+        [SerializeField] private List<GameObject> _spawnedHumanUnits;
+        [SerializeField] private List<GameObject> _spawnedDroneUnits;
         private int _gameDifficulty;
 
         private void SetupHumanGruntPieces()
@@ -43,7 +46,7 @@ namespace Managers
                 var piecePosition = gruntPiece.transform;
                 piecePosition.position = new Vector2(tilePosition.x, tilePosition.y); 
                 
-                _spawnedUnits.Add(gruntPiece);
+                _spawnedHumanUnits.Add(gruntPiece);
             }
         }
         private void SetupHumanTankPieces()
@@ -76,7 +79,7 @@ namespace Managers
                 piecePosition.position = new Vector2(tilePosition.x, tilePosition.y);
                 tankPiece.GetComponent<TankPiece>().SetCurrentPosition(tileXPosition, tileYPosition);
 
-                _spawnedUnits.Add(tankPiece);
+                _spawnedHumanUnits.Add(tankPiece);
             }
         }
         private void SetupHumanJumpshipPieces()
@@ -107,8 +110,110 @@ namespace Managers
                 piecePosition.position = new Vector2(tilePosition.x, tilePosition.y);
                 piecePosition.localScale = new Vector3(0.55f, 0.55f, 0.55f);
                 
-                _spawnedUnits.Add(jumpshipPiece);
+                _spawnedHumanUnits.Add(jumpshipPiece);
             }
+        }
+
+        private void SetupDronePieces()
+        {
+            for (int i = 0; i < GameSettings.DRONE_UNITS_AMMOUNT; i++)
+            {
+                var dronePiece = new GameObject("Drone" + (i + 1));
+                dronePiece.AddComponent<DronePiece>();
+                dronePiece.AddComponent<SpriteRenderer>();
+                dronePiece.GetComponent<SpriteRenderer>().sprite = dronePiece.GetComponent<DronePiece>().UnitSprite;
+                dronePiece.GetComponent<SpriteRenderer>().flipX = true;
+                dronePiece.GetComponent<SpriteRenderer>().sortingLayerName = GameBoardConstants.PIECES_SPRITE_LAYER;
+                dronePiece.AddComponent<BoxCollider2D>();
+                dronePiece.GetComponent<BoxCollider2D>().size = new Vector2(
+                    dronePiece.GetComponent<DronePiece>().BoxColliderSettings["sizeX"],
+                    dronePiece.GetComponent<DronePiece>().BoxColliderSettings["sizeY"]);
+                dronePiece.GetComponent<BoxCollider2D>().offset = new Vector2(
+                    dronePiece.GetComponent<DronePiece>().BoxColliderSettings["offsetX"],
+                    dronePiece.GetComponent<DronePiece>().BoxColliderSettings["offsetY"]);
+
+                int tileXPosition = (GameBoardConstants.BOARD_HEIGHT - 1) -
+                                    Random.Range(0, GameBoardConstants.DRONES_SPAWN_ROWS);
+                Debug.Log(tileXPosition);
+                int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
+                var chosenTile = GameObject.Find("Tile: " + tileXPosition + " " + tileYPosition);
+                var tilePosition = chosenTile.transform.position;
+                chosenTile.GetComponent<BoardTile>().SetOccupant(dronePiece);
+
+                // TODO: Add a method in utils or something for transform position since we will have quite a bit. C# ay can't directl access structs...cop by value default...
+                var piecePosition = dronePiece.transform;
+                piecePosition.position = new Vector2(tilePosition.x, tilePosition.y);
+                piecePosition.localScale = new Vector3(0.55f, 0.55f, 0.55f);
+
+
+                _spawnedDroneUnits.Add(dronePiece);
+            }
+        }
+
+        private void SetupDreadnoughtPieces() {
+            for (int i = 0; i < GameSettings.DREADNOUGHT_UNITS_AMMOUNT; i++)
+            {
+                var dreadnoughtPiece = new GameObject("Dreadnought" + (i+1));
+                dreadnoughtPiece.AddComponent<DreadnoughtPiece>();
+                dreadnoughtPiece.AddComponent<SpriteRenderer>();
+                dreadnoughtPiece.GetComponent<SpriteRenderer>().sprite = dreadnoughtPiece.GetComponent<DreadnoughtPiece>().UnitSprite;
+                dreadnoughtPiece.GetComponent<SpriteRenderer>().flipX = true;
+                dreadnoughtPiece.GetComponent<SpriteRenderer>().sortingLayerName = GameBoardConstants.PIECES_SPRITE_LAYER;
+                dreadnoughtPiece.AddComponent<BoxCollider2D>();
+                dreadnoughtPiece.GetComponent<BoxCollider2D>().size = new Vector2(
+                    dreadnoughtPiece.GetComponent<DreadnoughtPiece>().BoxColliderSettings["sizeX"],
+                    dreadnoughtPiece.GetComponent<DreadnoughtPiece>().BoxColliderSettings["sizeY"]);
+                dreadnoughtPiece.GetComponent<BoxCollider2D>().offset = new Vector2(
+                    dreadnoughtPiece.GetComponent<DreadnoughtPiece>().BoxColliderSettings["offsetX"],
+                    dreadnoughtPiece.GetComponent<DreadnoughtPiece>().BoxColliderSettings["offsetY"]);
+
+                int tileXPosition = GameBoardConstants.BOARD_HEIGHT - Random.Range(0, GameBoardConstants.DRONES_SPAWN_ROWS);
+                int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
+                var chosenTile = GameObject.Find("Tile: " + tileXPosition + " " + tileYPosition);
+                var tilePosition = chosenTile.transform.position;
+                chosenTile.GetComponent<BoardTile>().SetOccupant(dreadnoughtPiece);
+                
+                // TODO: Add a method in utils or something for transform position since we will have quite a bit. C# ay can't directl access structs...cop by value default...
+                var piecePosition = dreadnoughtPiece.transform;
+                piecePosition.position = new Vector2(tilePosition.x, tilePosition.y);
+                piecePosition.localScale = new Vector3(0.55f, 0.55f, 0.55f);
+                
+                
+                _spawnedDroneUnits.Add(dreadnoughtPiece);
+            } 
+        }
+        
+        private void SetupCommandUnitPieces() {
+            for (int i = 0; i < GameSettings.CONTROL_UNITS_AMMOUNT; i++)
+            {
+                var ControlPiece = new GameObject("Command Unit" + (i+1));
+                ControlPiece.AddComponent<CommandUnitPiece>();
+                ControlPiece.AddComponent<SpriteRenderer>();
+                ControlPiece.GetComponent<SpriteRenderer>().sprite = ControlPiece.GetComponent<CommandUnitPiece>().UnitSprite;
+                ControlPiece.GetComponent<SpriteRenderer>().flipX = true;
+                ControlPiece.GetComponent<SpriteRenderer>().sortingLayerName = GameBoardConstants.PIECES_SPRITE_LAYER;
+                ControlPiece.AddComponent<BoxCollider2D>();
+                ControlPiece.GetComponent<BoxCollider2D>().size = new Vector2(
+                    ControlPiece.GetComponent<CommandUnitPiece>().BoxColliderSettings["sizeX"],
+                    ControlPiece.GetComponent<CommandUnitPiece>().BoxColliderSettings["sizeY"]);
+                ControlPiece.GetComponent<BoxCollider2D>().offset = new Vector2(
+                    ControlPiece.GetComponent<CommandUnitPiece>().BoxColliderSettings["offsetX"],
+                    ControlPiece.GetComponent<CommandUnitPiece>().BoxColliderSettings["offsetY"]);
+
+                int tileXPosition = GameBoardConstants.BOARD_HEIGHT - Random.Range(0, GameBoardConstants.DRONES_SPAWN_ROWS);
+                int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
+                var chosenTile = GameObject.Find("Tile: " + tileXPosition + " " + tileYPosition);
+                var tilePosition = chosenTile.transform.position;
+                chosenTile.GetComponent<BoardTile>().SetOccupant(ControlPiece);
+                
+                // TODO: Add a method in utils or something for transform position since we will have quite a bit. C# ay can't directl access structs...cop by value default...
+                var piecePosition = ControlPiece.transform;
+                piecePosition.position = new Vector2(tilePosition.x, tilePosition.y);
+                piecePosition.localScale = new Vector3(0.55f, 0.55f, 0.55f);
+                
+                
+                _spawnedDroneUnits.Add(ControlPiece);
+            } 
         }
 
         //PUBLIC:
@@ -124,12 +229,9 @@ namespace Managers
             SetupHumanGruntPieces();
             SetupHumanTankPieces();
             SetupHumanJumpshipPieces();
-
-           /* foreach (var tile in gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix)
-            {
-                var result = tile.GetComponent<BoardTile>().TileOccupant != null ? Color.red : Color.green;
-                tile.GetComponent<BoardTile>().ChangeTileColorTint(result);
-            } */
+            SetupDronePieces();
+            SetupDreadnoughtPieces();
+            SetupCommandUnitPieces();
         }
 
         // Update is called once per frame

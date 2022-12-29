@@ -14,15 +14,12 @@ namespace Utils
         private RaycastHit2D _target;
         private GameObject selectedGameObject;
 
-        private void Awake()
-        {
-            
-        }
-
         public void Update()
         {
             if (Input.GetMouseButtonDown(_leftMouseButton))
             {
+                var board = GameObject.Find("GameBoard");
+                board.GetComponent<GameBoard.GameBoard>().ClearBoardColors();
                 _target = GetMouseRealTarget();
                 var extractedObject = ExtractTargetedObject(_target);
                 Debug.Log(extractedObject);
@@ -48,6 +45,11 @@ namespace Utils
 
         public void HandleSelectedObject(GameObject clickedObject)
         {
+            // TODO: Fix this
+            if (clickedObject == null)
+            {
+                return;
+            }
             // Add check for current or opposing team
             if (clickedObject.TryGetComponent<BasePiece>(out BasePiece gamePiece))
             {
@@ -60,8 +62,9 @@ namespace Utils
             {
                 var moveLocation = ConversionUtils.WorldPositionFromCoordinates(tile.XCoordinate, tile.YCoordinate);
                 selectedGameObject.GetComponent<BasePiece>().MoveAction(moveLocation);
+                selectedGameObject = null;
+                return;
             }
-            
             // TODO: Add logic for selecting enemy unit and attacking
         }
     }
