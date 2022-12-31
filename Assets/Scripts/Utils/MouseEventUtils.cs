@@ -13,6 +13,8 @@ namespace Utils
         private const int _leftMouseButton = 0;
         private RaycastHit2D _target;
         private GameObject selectedGameObject;
+        
+        
 
         public void Update()
         {
@@ -45,23 +47,29 @@ namespace Utils
 
         public void HandleSelectedObject(GameObject clickedObject)
         {
-            // TODO: Fix this
-            if (clickedObject == null)
-            {
+            if (clickedObject is null)
                 return;
-            }
-            // Add check for current or opposing team
+
             if (clickedObject.TryGetComponent<BasePiece>(out BasePiece gamePiece))
             {
                 gamePiece.HighlightMovePath();
                 selectedGameObject = clickedObject;
                 return;
             }
+            // TODO: Fix this and combine the two IFs
+            if (clickedObject.TryGetComponent<BoardTile>(out var square) && !selectedGameObject)
+                //TODO: Optional add some indication visual that a tile was clicked
+                return;
+            // Add check for current or opposing team
 
-            if (clickedObject.TryGetComponent<BoardTile>(out BoardTile tile) && selectedGameObject)
+            if (clickedObject.TryGetComponent<BoardTile>(out var endTile) && selectedGameObject)
             {
-                var moveLocation = ConversionUtils.WorldPositionFromCoordinates(tile.XCoordinate, tile.YCoordinate);
-                selectedGameObject.GetComponent<BasePiece>().MoveAction(moveLocation);
+                // TODO: Fix this BS. Need to somehow handle who controls the flow and where. Shouldn't be getting the board here >.>
+                var startTile = GameObject.Find("GameBoard").GetComponent<GameBoard.GameBoard>()
+                    .GetTileFromMatrix(selectedGameObject.GetComponent<BasePiece>().CurrentPieceCoordinates.x,
+                        selectedGameObject.GetComponent<BasePiece>().CurrentPieceCoordinates.y);
+                selectedGameObject.GetComponent<BasePiece>().MoveAction(endTile);
+                startTile.GetComponent<BoardTile>().ClearOccupant();
                 selectedGameObject = null;
                 return;
             }

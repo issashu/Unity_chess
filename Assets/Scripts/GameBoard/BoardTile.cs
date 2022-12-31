@@ -42,6 +42,11 @@ namespace GameBoard
         {
             this._occupyingUnit = null;
         }
+
+        public bool isTileOccupied()
+        {
+            return this._occupyingUnit is not null;
+        }
         
         public float TileHeight => _tileHeight;
         public float TileWidth => _tileWidth;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using GameBoard;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -12,6 +13,13 @@ namespace Utils
         public static Vector2 WorldPositionFromCoordinates(int x, int y, int objectSize=1)
         {
             return new Vector2(x, y) * objectSize;
+        }
+
+        public static Point CreatePointObjectFromTile(BoardTile tile)
+        {
+            var tmpPoint = new Point(tile.XCoordinate, tile.YCoordinate);
+
+            return tmpPoint;
         }
     }
     

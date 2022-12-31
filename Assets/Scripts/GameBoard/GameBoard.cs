@@ -1,6 +1,9 @@
+using System.Drawing;
 using Defines;
 using Unity.VisualScripting;
 using UnityEngine;
+using Color = UnityEngine.Color;
+using Point = Utils.Point;
 
 namespace GameBoard
 {
@@ -69,5 +72,14 @@ namespace GameBoard
                 tile.GetComponent<BoardTile>().ChangeTileColorTint(Color.white);
             }
         }
+
+        public bool isPointWithinBoardLimits(Point point)
+        {
+            // Checks if tile is outside board and returns false if it is, or true - if it is within board
+            var isOutsideBoard= point.x < 0 || point.y < 0 || point.x >= GameBoardConstants.BOARD_HEIGHT ||
+                                point.y >= GameBoardConstants.BOARD_WIDTH;
+            return !isOutsideBoard;
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using GameBoard;
 using UnityEngine;
 using Utils;
 
@@ -32,17 +33,28 @@ namespace GamePieces.Humans
             };
         }
         
-        protected override void ListValidMovesFromPosition()
+        protected override void ListPossibleMovesFromPosition()
         {
             // Standalone move mechanic
             
             int directions = movesXAxis.Length;
+            var gameBoard = GameObject.Find("GameBoard");
+            var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
 
             for (int i = 0; i < directions; i++)
             {
                 var newPosition = new Point(this.currentTilePosition.x + movesXAxis[i],
                                             this.currentTilePosition.y + movesYAxis[i]);
-                this.validMovesFromPosition.Add(newPosition);
+                if (!gameBoard.GetComponent<GameBoard.GameBoard>().isPointWithinBoardLimits(newPosition))
+                    continue;
+                
+                // TODO: Code repetition with basic piece. Extract to a method 
+                var tile = boardMatrix[newPosition.x, newPosition.y];
+                if (!tile.GetComponent<BoardTile>().isTileOccupied())
+                {
+                    //Add valid move tile, only if no piece is there.
+                    this.validMovesFromPosition.Add(newPosition);
+                }
             }
         }
     }

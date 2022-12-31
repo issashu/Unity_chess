@@ -26,8 +26,8 @@ namespace GamePieces.Drones
             
             this.boxColliderSettings = new Dictionary<string, float>
             {
-                {"offsetX", 0.01f}, {"offsetY", 1.04f},
-                {"sizeX", 1.06f},   {"sizeY", 1.82f}
+                {"offsetX", 0.13f}, {"offsetY", 1.15f},
+                {"sizeX", 1.16f},   {"sizeY", 2.34f}
             };
         }
     }

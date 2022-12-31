@@ -52,29 +52,41 @@ namespace GamePieces
         }
         
         public virtual void HighlightMovePath()
-        // TODO Make it a list with valid move tiles. Start going in each of the directions and check up to movement distance. Add all valid to a list
-        // Second step will be to check if there aren't enemies there. Remove ones with enemies. After highlight legal only
+        // TODO Do rethink to extract the validations in a separate class, so that pieces do not have access to board more then necessary. See UML
         {
             var gameBoard = GameObject.Find("GameBoard");
             var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
-
-            ListValidMovesFromPosition();
             
+            ListPossibleMovesFromPosition();
+
             foreach (var point in this.validMovesFromPosition)
             {
-                if (point.x < 0 || point.y < 0 || point.x >= GameBoardConstants.BOARD_HEIGHT || point.y >= GameBoardConstants.BOARD_WIDTH) 
-                    continue;
-                    
                 var tile = boardMatrix[point.x, point.y].GetComponent<BoardTile>();
                 tile.ChangeTileColorTint(Color.green);
             }
         }
         
-        protected virtual void MovePiece(Vector2 targetLocation)
+        /**
+         * <summary>Method to move the game piece to another location on the board. Returns true on success and false
+         * on failure</summary>
+         */
+        protected virtual void MovePiece(BoardTile targetLocation)
         {
-            var chosenTile = GameObject.Find("Tile: " + targetLocation.x + " " + targetLocation.y);
-            this.SetCurrentPosition(Mathf.RoundToInt(targetLocation.x), Mathf.RoundToInt(targetLocation.y));
-            this.transform.position = chosenTile.transform.position;
+            // TODO: Rethink logic to get either a point and see, if it is allowed square to move or do that check before move action
+            // If we pass nothing, just bail out
+            var moveLocationPointStruct = ConversionUtils.CreatePointObjectFromTile(targetLocation);
+            if (!this.validMovesFromPosition.Contains(moveLocationPointStruct))
+                return;
+            
+            var moveLocationVector =
+                ConversionUtils.WorldPositionFromCoordinates(targetLocation.XCoordinate,
+                    targetLocation.YCoordinate);
+            // TODO: Do check if we really need the SetCurrentPosition
+            this.SetCurrentPosition(Mathf.RoundToInt(moveLocationVector.x), Mathf.RoundToInt(moveLocationVector.y));
+            // TODO: Add logic for clearing previous positions
+            this.transform.position = targetLocation.transform.position;
+            targetLocation.SetOccupant(this.GameObject());
+            this.validMovesFromPosition.Clear();
         }
         
         public virtual void AttackAction()
@@ -87,9 +99,11 @@ namespace GamePieces
             
         }
 
-        protected virtual void ListValidMovesFromPosition()
+        protected virtual void ListPossibleMovesFromPosition()
         {
             int directions = this.movesXAxis.Length;
+            var gameBoard = GameObject.Find("GameBoard");
+            var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
 
             for (int direction = 0; direction < directions; direction++)
             {
@@ -97,21 +111,32 @@ namespace GamePieces
                 {
                     var newPosition = new Point(this.currentTilePosition.x + (distance * this.movesXAxis[direction]),
                         this.currentTilePosition.y + (distance * this.movesYAxis[direction]));
-                
-                    this.validMovesFromPosition.Add(newPosition);
+                    if (!gameBoard.GetComponent<GameBoard.GameBoard>().isPointWithinBoardLimits(newPosition))
+                    {
+                        continue;
+                    }
+
+                    var tile = boardMatrix[newPosition.x, newPosition.y];
+                    
+                    if (!tile.GetComponent<BoardTile>().isTileOccupied())
+                    {
+                        //Add valid move tile, only if no piece is there.
+                        this.validMovesFromPosition.Add(newPosition);
+                    }
                 }
             }
         }
-        
+
         /*-----------PUBLIC-------------*/
         public int MaxMoveDistance => maxMoveDistance;
         public int MaxAttackDistance => maxAttackDistance;
         public int HitPoints => hitPoints;
         public bool IsUnitAlive => isAlive;
+        public Point CurrentPieceCoordinates => this.currentTilePosition;
         public Sprite UnitSprite => gameSprite;
         public Dictionary<string, bool> AllowedActions => allowedActions;
         public Dictionary<string, float> BoxColliderSettings => boxColliderSettings;
-        public void MoveAction(Vector2 targetLocation) => MovePiece(targetLocation);
+        public void MoveAction(BoardTile targetLocation) => MovePiece(targetLocation);
     }
 }
 
