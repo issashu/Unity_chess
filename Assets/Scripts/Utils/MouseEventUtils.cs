@@ -53,6 +53,7 @@ namespace Utils
             if (clickedObject.TryGetComponent<BasePiece>(out BasePiece gamePiece))
             {
                 gamePiece.HighlightMovePath();
+                gamePiece.HighlightThreatenedTiles();
                 selectedGameObject = clickedObject;
                 return;
             }

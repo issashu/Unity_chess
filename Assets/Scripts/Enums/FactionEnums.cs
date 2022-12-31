@@ -2,6 +2,6 @@ namespace Enums
 {
     public enum FactionEnum
     {
-        Drones, Humans
+        None = 0, Drones, Humans
     }
 }

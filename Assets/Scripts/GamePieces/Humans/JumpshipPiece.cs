@@ -18,8 +18,13 @@ namespace GamePieces.Humans
             this.currentTilePosition = new Point(0, 0);
             this.gameSprite = Resources.Load<Sprite>("Sprites/Humans/Jumpship");
             this.validMovesFromPosition = new List<Point>();
+            this.threatenedTilesFromPosition = new List<Point>();
+
             this.movesXAxis = new [] {1, -1, 2, 2, 1, -1, -2, -2};
             this.movesYAxis = new [] {2, 2, 1, -1, -2, -2, -1, 1};
+            
+            this.attacksXAxis = new [] {0, 1, 0,-1};
+            this.attacksYAxis = new [] {1, 0,-1, 0};
 
             this.allowedActions = new Dictionary<string, bool>
             {

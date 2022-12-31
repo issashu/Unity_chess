@@ -17,8 +17,12 @@ namespace GamePieces.Humans
             this.currentTilePosition = new Point(0, 0);
             this.gameSprite = Resources.Load<Sprite>("Sprites/Humans/Grunt");
             this.validMovesFromPosition = new List<Point>();
+            this.threatenedTilesFromPosition = new List<Point>();
             this.movesXAxis = new [] {0, 1, 0, -1};
             this.movesYAxis = new [] {1, 0, -1, 0};
+            
+            this.attacksXAxis = new [] {1, 1,-1,-1};
+            this.attacksYAxis = new [] {1,-1,-1, 1};
 
             this.allowedActions = new Dictionary<string, bool>
             {

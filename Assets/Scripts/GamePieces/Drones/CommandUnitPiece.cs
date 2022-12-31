@@ -17,8 +17,13 @@ namespace GamePieces.Drones
             this.gameSprite = Resources.Load<Sprite>("Sprites/Drones/CommandUnit");
             this.currentTilePosition = new Point(0, 0);
             this.validMovesFromPosition = new List<Point>();
+            this.threatenedTilesFromPosition = new List<Point>();
+
             this.movesXAxis = new [] {0, 0};
             this.movesYAxis = new [] {1,-1};
+            
+            this.attacksXAxis = new [] {0};
+            this.attacksYAxis = new [] {0};
 
             this.allowedActions = new Dictionary<string, bool>
             {
