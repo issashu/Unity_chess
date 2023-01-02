@@ -21,50 +21,45 @@ namespace GameBoard
             this._boardHeight = Defines.GameBoardConstants.BOARD_HEIGHT;
             this._boardWidth = Defines.GameBoardConstants.BOARD_WIDTH;
             this._boardMatrix = new GameObject[this._boardHeight, this._boardWidth];
-            
-            var tmp = new GameObject("Tile");
-            tmp.AddComponent<BoardTile>();
-            tmp.AddComponent<SpriteRenderer>();
-            tmp.AddComponent<BoxCollider2D>();
-            
+
             for (var x = 0; x < this._boardHeight; x++)
             {
                 for (var y = 0; y < this._boardWidth; y++)
                 {
-                    SetupTileObject(x, y, ref tmp);
+                    this._boardMatrix[x , y] = SetupTileObject(x, y);
                 }
             }
-            
-            Destroy(tmp);
         }
 
-        private void SetupTileObject(int boardX, int boardY, ref GameObject objectToFill)
+        private GameObject SetupTileObject(int boardX, int boardY)
         {
-            ref var tmpObject = ref this._boardMatrix[boardX, boardY];
+            var boardTile = new GameObject($"Tile {boardX} {boardY}");
+            boardTile.AddComponent<BoardTile>();
+            boardTile.AddComponent<SpriteRenderer>();
+            boardTile.AddComponent<BoxCollider2D>();
             
-            tmpObject = Instantiate(objectToFill, transform);
-            tmpObject.name = "Tile: " + boardX + " " + boardY;
-            tmpObject.GetComponent<SpriteRenderer>().sprite = tmpObject.GetComponent<BoardTile>().TileSprite;
-            tmpObject.GetComponent<SpriteRenderer>().sortingLayerName = GameBoardConstants.BOARD_TILES_LAYER;
-            tmpObject.GetComponent<Collider2D>().isTrigger = true;
-            tmpObject.GetComponent<BoxCollider2D>().size = new Vector2(1.21f, 0.78f);
+            boardTile.GetComponent<SpriteRenderer>().sprite = boardTile.GetComponent<BoardTile>().TileSprite;
+            boardTile.GetComponent<SpriteRenderer>().sortingLayerName = GameBoardConstants.BOARD_TILES_LAYER;
+            boardTile.GetComponent<Collider2D>().isTrigger = true;
+            boardTile.GetComponent<BoxCollider2D>().size = new Vector2(1.21f, 0.78f);
             
-            var height = tmpObject.GetComponent<BoardTile>().TileHeight;
-            var width = tmpObject.GetComponent<BoardTile>().TileWidth;
-            var xAxisPosition = (boardX * height + boardY * width) / 2f;
-            var yAxisPosition = (boardX * height - boardY * width) / 4f;
-            tmpObject.transform.position = new Vector2(xAxisPosition, yAxisPosition);
-            tmpObject.GetComponent<BoardTile>().UpdateTileGridPosition(boardX, boardY);
+            var height = boardTile.GetComponent<BoardTile>().TileHeight;
+            var width = boardTile.GetComponent<BoardTile>().TileWidth;
+            var xAxisPosition = (boardX * height + boardY * width) * GameBoardConstants.HALF;
+            var yAxisPosition = (boardX * height - boardY * width) * GameBoardConstants.QUARTER;
+            
+            boardTile.transform.position = new Vector2(xAxisPosition, yAxisPosition);
+            boardTile.GetComponent<BoardTile>().UpdateTileGridPosition(boardX, boardY);
+            boardTile.transform.parent = transform;
 
-            Debug.Log($"Tile with coords: X:{tmpObject.GetComponent<BoardTile>().XCoordinate}; " +
-                      $"Y: {tmpObject.GetComponent<BoardTile>().YCoordinate}");
+            return boardTile;
         }
 
         public GameObject GetTileFromMatrix(int x, int y)
         {
             return this._boardMatrix[x, y];
         }
-
+        
         public void ClearBoardColors()
         {
             foreach (var tile in _boardMatrix)

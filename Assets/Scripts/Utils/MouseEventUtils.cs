@@ -50,7 +50,7 @@ namespace Utils
             if (clickedObject is null)
                 return;
 
-            if (clickedObject.TryGetComponent<BasePiece>(out BasePiece gamePiece))
+            if (clickedObject.TryGetComponent<BasePiece>(out BasePiece gamePiece) && !selectedGameObject)
             {
                 gamePiece.HighlightMovePath();
                 gamePiece.HighlightThreatenedTiles();
@@ -61,7 +61,6 @@ namespace Utils
             if (clickedObject.TryGetComponent<BoardTile>(out var square) && !selectedGameObject)
                 //TODO: Optional add some indication visual that a tile was clicked
                 return;
-            // Add check for current or opposing team
 
             if (clickedObject.TryGetComponent<BoardTile>(out var endTile) && selectedGameObject)
             {
@@ -75,6 +74,19 @@ namespace Utils
                 return;
             }
             // TODO: Add logic for selecting enemy unit and attacking
+
+            if (clickedObject.TryGetComponent<BasePiece>(out var attackTarget) && selectedGameObject)
+            {
+                // TODO Also we do have a method in the Piece Manager to compare teams >.> Use it!
+                if (attackTarget.PieceFaction != selectedGameObject.GetComponent<BasePiece>().PieceFaction)
+                {
+                    int damageDone = selectedGameObject.GetComponent<BasePiece>().DamageDone;
+                    selectedGameObject.GetComponent<BasePiece>().AttackAction(attackTarget, damageDone);
+                }
+                
+                
+            }
+            
         }
     }
 }

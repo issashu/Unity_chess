@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Enums;
 using UnityEngine;
 using Utils;
 
@@ -12,6 +13,7 @@ namespace GamePieces.Humans
             this.maxAttackDistance = 7;
             this.attackPower = 2;
             this.hitPoints = 4;
+            this.gameTeam = (int) FactionEnum.Humans;
             this.isAlive = true;
             this.currentTilePosition = new Point(0, 0);
             this.gameSprite = Resources.Load<Sprite>("Sprites/Humans/Tank");

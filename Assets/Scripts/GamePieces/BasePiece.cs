@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using Defines;
@@ -20,12 +21,14 @@ namespace GamePieces
         protected List<Point> validMovesFromPosition;
         protected List<Point> threatenedTilesFromPosition;
         protected Point currentTilePosition;
-        protected Dictionary<string, float> boxColliderSettings; // check to make named tuple C#7
+        protected Dictionary<string, float> boxColliderSettings; 
         protected Dictionary<string, bool> allowedActions;
         protected int [] movesXAxis;
         protected int [] movesYAxis;
         protected int[] attacksXAxis;
         protected int[] attacksYAxis;
+
+        public static event EventHandler<BasePiece> OnHealthZero;
 
         protected virtual void Awake()
         {
@@ -56,14 +59,22 @@ namespace GamePieces
             };
         }
 
+        protected virtual void Update()
+        {
+            if (this.hitPoints == 0)
+            {
+                OnHealthZero?.Invoke(this, this);
+            }
+        }
+
         public virtual void SetCurrentPosition(int x, int y)
         {
             this.currentTilePosition.x = x;
             this.currentTilePosition.y = y;
         }
         
-        public virtual void HighlightMovePath()
         // TODO Do rethink to extract the validations in a separate class, so that pieces do not have access to board more then necessary. See UML
+        public virtual void HighlightMovePath()
         {
             var gameBoard = GameObject.Find("GameBoard");
             var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
@@ -80,6 +91,7 @@ namespace GamePieces
 
         public virtual void HighlightThreatenedTiles()
         {
+            // TODO: Extract to Piece Manager and unify the two highlights. Code is almost the same except color...
             var gameBoard = GameObject.Find("GameBoard");
             var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
 
@@ -100,18 +112,42 @@ namespace GamePieces
         {
             // TODO: Rethink logic to get either a point and see, if it is allowed square to move or do that check before move action
             // If we pass nothing, just bail out
-            var moveLocationPointStruct = ConversionUtils.CreatePointObjectFromTile(targetLocation);
-            if (!this.validMovesFromPosition.Contains(moveLocationPointStruct))
+            var moveLocationPoint = ConversionUtils.CreatePointObjectFromTile(targetLocation);
+            if (!this.validMovesFromPosition.Contains(moveLocationPoint))
                 return;
             
             var moveLocationVector = ConversionUtils.WorldPositionFromCoordinates(targetLocation.XCoordinate,
-                                                                                  targetLocation.YCoordinate);
+                                                                                   targetLocation.YCoordinate);
             // TODO: Do check if we really need the SetCurrentPosition
             this.SetCurrentPosition(Mathf.RoundToInt(moveLocationVector.x), Mathf.RoundToInt(moveLocationVector.y));
             // TODO: Add logic for clearing previous positions
             this.transform.position = targetLocation.transform.position;
             targetLocation.SetOccupant(this.GameObject());
             this.validMovesFromPosition.Clear();
+        }
+        
+        public virtual void AttackAction(BasePiece target, int damageDone)
+        {
+            target.TakeDamage(damageDone);
+            this.threatenedTilesFromPosition.Clear();
+        }
+
+        protected virtual void TakeDamage(int damage)
+        {
+            this.hitPoints -= damage;
+            
+            if (this.hitPoints < 0)
+            {
+                this.hitPoints = 0;
+            }
+        }
+
+        public void OnDestroy()
+        {
+            // TODO Exit gracefully or just deactivate gameObjects in order not to throw exceptions on exit
+            var boardTilePieceIsOn = GameObject.Find($"Tile {this.currentTilePosition.x} {this.currentTilePosition.y}");
+            boardTilePieceIsOn.GetComponent<BoardTile>().ClearOccupant();
+            Debug.Log($"{this.name} has been destroyed");                                                                                                                                
         }
         
         public virtual void ListThreatenedTiles()
@@ -127,24 +163,30 @@ namespace GamePieces
                 {
                     var attackTile = new Point(this.currentTilePosition.x + (distance * this.attacksXAxis[direction]),
                         this.currentTilePosition.y + (distance * this.attacksYAxis[direction]));
-                    
+                    // TODO Redo the ifs...too ugly with so many just sending a continue :/
                     if (!gameBoard.GetComponent<GameBoard.GameBoard>().isPointWithinBoardLimits(attackTile))
                     {
                         continue;
                     }
                     
+                    var tile = boardMatrix[attackTile.x, attackTile.y].GetComponent<BoardTile>();
+                    if (!tile.isTileOccupied())
+                        continue;
+
+                    if (tile.TileOccupant.GetComponent<BasePiece>().PieceFaction == this.gameTeam) 
+                        //TODO We have a method to compare teams. use it!
+                    {
+                        continue;
+                    }
+
                     this.threatenedTilesFromPosition.Add(attackTile);
                 }
             }
         }
 
-        public virtual void AttackAction()
-        {
-            
-        }
-
         protected virtual void ListPossibleMovesFromPosition()
         {
+            // TODO Simplify here by Getting directly the scrtipt and not only game object (we need the scripts anyways)
             int directions = this.movesXAxis.Length;
             var gameBoard = GameObject.Find("GameBoard");
             var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
@@ -172,7 +214,9 @@ namespace GamePieces
         public int MaxMoveDistance => maxMoveDistance;
         public int MaxAttackDistance => maxAttackDistance;
         public int HitPoints => hitPoints;
+        public int DamageDone => attackPower;
         public bool IsUnitAlive => isAlive;
+        public int PieceFaction => gameTeam;
         public Point CurrentPieceCoordinates => this.currentTilePosition;
         public Sprite UnitSprite => gameSprite;
         public Dictionary<string, bool> AllowedActions => allowedActions;

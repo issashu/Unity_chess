@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Enums;
 using UnityEngine;
 using Utils;
 
@@ -12,6 +13,7 @@ namespace GamePieces.Drones
             this.maxAttackDistance = 1;
             this.attackPower = 2;
             this.hitPoints = 5;
+            this.gameTeam = (int) FactionEnum.Drones;
             this.isAlive = true;
             this.currentTilePosition = new Point(0, 0);
             this.gameSprite = Resources.Load<Sprite>("Sprites/Drones/Dreadnought");
