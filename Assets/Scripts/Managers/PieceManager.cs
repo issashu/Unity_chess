@@ -13,20 +13,23 @@ namespace Managers
 {
     public class PieceManager: MonoBehaviour
     {
+        // TODO Those events might need to be called by Game Manager
         public static event EventHandler OnHumansWipe;
         public static event EventHandler OnDronesWipe;
         public static event EventHandler OnAICommandUnitsWipe;
         
         // TODO: Remove the serialize field. It is just for debugging the list
-         [SerializeField] private List<GameObject> _spawneHumanPieces;
+         [SerializeField] private List<GameObject> _spawnedHumanPieces;
          [SerializeField] private List<GameObject> _spawnedAIPieces;
          [SerializeField] private List<GameObject> _spawnedAICommandUnits;
+         [SerializeField] private GameObject _gameBoard;
         
         private void Awake()
         { 
-            this._spawneHumanPieces = new List<GameObject>();
+            this._spawnedHumanPieces = new List<GameObject>();
             this._spawnedAIPieces = new List<GameObject>();
             this._spawnedAICommandUnits = new List<GameObject>();
+            this._gameBoard = GameObject.Find("GameBoard");
             // TODO Think of a way to search faster for any alive command units
         }
         
@@ -45,7 +48,7 @@ namespace Managers
 
         private void Update()
         {
-            if (this._spawneHumanPieces.Count == 0)
+            if (this._spawnedHumanPieces.Count == 0)
             {
                 OnHumansWipe?.Invoke(this, EventArgs.Empty);
             }
@@ -91,7 +94,7 @@ namespace Managers
                 gruntPiece.GetComponent<GruntPiece>().SetCurrentPosition(tileXPosition, tileYPosition);
                 gruntPiece.transform.parent = transform;
 
-                this._spawneHumanPieces.Add(gruntPiece);
+                this._spawnedHumanPieces.Add(gruntPiece);
             }
         }
         
@@ -126,7 +129,7 @@ namespace Managers
                 tankPiece.GetComponent<TankPiece>().SetCurrentPosition(tileXPosition, tileYPosition);
                 tankPiece.transform.parent = transform;
 
-                this._spawneHumanPieces.Add(tankPiece);
+                this._spawnedHumanPieces.Add(tankPiece);
             }
         }
         private void SetupHumanJumpshipPieces()
@@ -159,7 +162,7 @@ namespace Managers
                 jumpshipPiece.GetComponent<JumpshipPiece>().SetCurrentPosition(tileXPosition, tileYPosition);
                 jumpshipPiece.transform.parent = transform;
                 
-                this._spawneHumanPieces.Add(jumpshipPiece);
+                this._spawnedHumanPieces.Add(jumpshipPiece);
             }
         }
 
@@ -279,11 +282,25 @@ namespace Managers
 
         private void DestroyPiece(object sender, BasePiece deadPiece)
         {
+            var faction = deadPiece.PieceFaction;
+            switch (faction)
+            {
+                case 1: // Drones
+                    this._spawnedAIPieces.Remove(deadPiece.gameObject);
+                    break;
+                
+                case 2: // Humans
+                    this._spawnedHumanPieces.Remove(deadPiece.gameObject);
+                    break;
+            }
+            var boardTilePieceIsOn =
+                GameObject.Find($"Tile {deadPiece.CurrentPieceCoordinates.x} {deadPiece.CurrentPieceCoordinates.y}");
+            boardTilePieceIsOn.GetComponent<BoardTile>().ClearOccupant();
             deadPiece.OnDestroy();
             Destroy(deadPiece.gameObject);
         }
 
         public List<GameObject> AiPieces => this._spawnedAIPieces;
-        public List<GameObject> HumanPieces => this._spawneHumanPieces;
+        public List<GameObject> HumanPieces => this._spawnedHumanPieces;
     }
 }
