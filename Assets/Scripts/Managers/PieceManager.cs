@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Defines;
+using Enums;
 using GameBoard;
 using GamePieces;
 using GamePieces.Drones;
@@ -44,6 +45,7 @@ namespace Managers
             SetupDreadnoughtPieces();
 
             BasePiece.OnHealthZero += DestroyPiece;
+            TurnManager.OnTurnSwitch += SwitchActivePieces;
         }
 
         private void Update()
@@ -275,7 +277,7 @@ namespace Managers
             } 
         }
 
-        public bool arePiecesSameteam(BasePiece one, BasePiece other)
+        public bool arePiecesSameTeam(BasePiece one, BasePiece other)
         {
             return one.PieceFaction == other.PieceFaction;
         }
@@ -285,11 +287,11 @@ namespace Managers
             var faction = deadPiece.PieceFaction;
             switch (faction)
             {
-                case 1: // Drones
+                case (int)FactionEnum.Drones:
                     this._spawnedAIPieces.Remove(deadPiece.gameObject);
                     break;
                 
-                case 2: // Humans
+                case (int)FactionEnum.Humans:
                     this._spawnedHumanPieces.Remove(deadPiece.gameObject);
                     break;
             }
@@ -298,6 +300,42 @@ namespace Managers
             boardTilePieceIsOn.GetComponent<BoardTile>().ClearOccupant();
             deadPiece.OnDestroy();
             Destroy(deadPiece.gameObject);
+        }
+        
+        private void SwitchActivePieces(object sender, FactionEnum newFaction)
+        {
+            switch (newFaction)
+            {
+                case FactionEnum.Humans:
+                    foreach (var unit in this._spawnedHumanPieces)
+                    {
+                        unit.GetComponent<BasePiece>().IsPieceActive = true;
+                    }
+                    
+                    foreach (var unit in this._spawnedAIPieces)
+                    {
+                        unit.GetComponent<BasePiece>().IsPieceActive = false;
+                    }
+                    
+                    break;
+                
+                case FactionEnum.Drones:
+                    foreach (var unit in this._spawnedAIPieces)
+                    {
+                        unit.GetComponent<BasePiece>().IsPieceActive = true;
+                    }
+                    foreach (var unit in this._spawnedHumanPieces)
+                    {
+                        unit.GetComponent<BasePiece>().IsPieceActive = false;
+                    }
+
+                    break;
+                
+                case FactionEnum.None:
+                default:
+                    Debug.LogError("Incorrect faction passed!");
+                    break;
+            }
         }
 
         public List<GameObject> AiPieces => this._spawnedAIPieces;

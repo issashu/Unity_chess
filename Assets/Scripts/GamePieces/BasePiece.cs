@@ -17,6 +17,7 @@ namespace GamePieces
         [SerializeField] protected int hitPoints;
         [SerializeField] protected int gameTeam;
         [SerializeField] protected bool isAlive;
+        [SerializeField] protected bool isActive;
         [SerializeField] protected Sprite gameSprite;
         protected List<Point> validMovesFromPosition;
         protected List<Point> threatenedTilesFromPosition;
@@ -38,6 +39,7 @@ namespace GamePieces
             this.hitPoints = 0;
             this.gameTeam = (int) FactionEnum.None;
             this.isAlive = false;
+            this.isActive = false;
             this.currentTilePosition = new Point(0, 0);
             this.validMovesFromPosition = new List<Point>();
             this.threatenedTilesFromPosition = new List<Point>();
@@ -124,10 +126,14 @@ namespace GamePieces
             this.transform.position = targetLocation.transform.position;
             targetLocation.SetOccupant(this.GameObject());
             this.validMovesFromPosition.Clear();
+            this.threatenedTilesFromPosition.Clear();
         }
         
         public virtual void AttackAction(BasePiece target, int damageDone)
         {
+            if (!this.threatenedTilesFromPosition.Contains(target.currentTilePosition))
+                return;
+           
             target.TakeDamage(damageDone);
             this.threatenedTilesFromPosition.Clear();
         }
@@ -147,10 +153,11 @@ namespace GamePieces
             // TODO Exit gracefully or just deactivate gameObjects in order not to throw exceptions on exit
             /*var boardTilePieceIsOn = GameObject.Find($"Tile {this.currentTilePosition.x} {this.currentTilePosition.y}");
             boardTilePieceIsOn.GetComponent<BoardTile>().ClearOccupant();*/
+            this.isAlive = false;
             Debug.Log($"{this.name} has been destroyed");                                                                                                                                
         }
-        
-        public virtual void ListThreatenedTiles()
+
+        protected virtual void ListThreatenedTiles()
         {
             // TODO: Extract actions to a separate class to avoid the repetition in move and attack.
             int shootingDirections = this.attacksXAxis.Length;
@@ -209,13 +216,18 @@ namespace GamePieces
                 }
             }
         }
-
+        
         /*-----------PUBLIC-------------*/
+        public bool IsPieceActive
+        {
+            get => this.isActive;
+            set => this.isActive = value;
+        }
         public int MaxMoveDistance => maxMoveDistance;
         public int MaxAttackDistance => maxAttackDistance;
         public int HitPoints => hitPoints;
         public int DamageDone => attackPower;
-        public bool IsUnitAlive => isAlive;
+        public bool IsPieceAlive => isAlive;
         public int PieceFaction => gameTeam;
         public Point CurrentPieceCoordinates => this.currentTilePosition;
         public Sprite UnitSprite => gameSprite;

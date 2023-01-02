@@ -17,6 +17,7 @@ namespace GamePieces.Drones
             this.hitPoints = 2;
             this.gameTeam = (int) FactionEnum.Drones;
             this.isAlive = true;
+            this.isActive = true;
             this.gameSprite = Resources.Load<Sprite>("Sprites/Drones/Drone");
             this.currentTilePosition = new Point(0, 0);
             this.validMovesFromPosition = new List<Point>();
