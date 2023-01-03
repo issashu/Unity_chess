@@ -19,6 +19,8 @@ namespace GameBoard
         private Point _objectCoordinates;
         private GameObject _occupyingUnit;
 
+        public SpriteRenderer TileSpriteRenderer => this.GetComponent<SpriteRenderer>();
+
         private void Awake()
         {
             this._tileSprite = Resources.Load<Sprite>("Sprites/BoardTiles/Board Tile");
@@ -36,7 +38,7 @@ namespace GameBoard
 
         public void ChangeTileColorTint(Color coloToChangeTo)
         {
-            this.GetComponent<SpriteRenderer>().material.color = coloToChangeTo;
+            this.TileSpriteRenderer.material.color = coloToChangeTo;
         }
 
         public void SetOccupant(GameObject Occupant)

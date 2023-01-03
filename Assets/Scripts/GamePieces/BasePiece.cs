@@ -178,9 +178,9 @@ namespace GamePieces
             Debug.Log($"{this.name} has been destroyed");                                                                                                                                
         }
 
-        public virtual void ChangePieceColor(Color newColor)
+        protected virtual void ChangePieceColor(Color newColor)
         {
-            this.GetComponent<SpriteRenderer>().material.color = newColor;
+            this.PieceSpriteRenderer.material.color = newColor;
         }
 
         public virtual void DeactivatePiece()
@@ -237,7 +237,6 @@ namespace GamePieces
 
         protected virtual void ListPossibleMovesFromPosition()
         {
-            // TODO Simplify here by Getting directly the script and not only game object (we need the scripts anyways)
             int directions = this.movesXAxis.Length;
             var gameBoard = GameBoard.GameBoard.Board;
             var boardMatrix = gameBoard.GameBoardMatrix;
@@ -274,6 +273,7 @@ namespace GamePieces
         public bool IsPieceAlive => isAlive;
         public int PieceFaction => gameTeam;
         public Point CurrentPieceCoordinates => this.currentTilePosition;
+        public SpriteRenderer PieceSpriteRenderer => this.GetComponent<SpriteRenderer>();
         public Sprite UnitSprite => gameSprite;
         public Dictionary<string, bool> AllowedActions => allowedActions;
         public Dictionary<string, float> BoxColliderSettings => boxColliderSettings;
