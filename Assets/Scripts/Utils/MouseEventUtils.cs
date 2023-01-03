@@ -14,14 +14,12 @@ namespace Utils
         private const int _leftMouseButton = 0;
         private RaycastHit2D _target;
         private GameObject _selectedGamePiece;
-        private GameObject _gameBoardObject;
         private GameBoard.GameBoard _gameBoardScript;
         private BasePiece _selectedGamePieceScript;
 
         private void Start()
         {
-            this._gameBoardObject = GameObject.Find("GameBoard");
-            this._gameBoardScript = this._gameBoardObject.GetComponent<GameBoard.GameBoard>();
+            this._gameBoardScript = GameBoard.GameBoard.Board;
             this._selectedGamePiece = null;
             this._selectedGamePieceScript = null;
         }
@@ -89,11 +87,10 @@ namespace Utils
             if (this._selectedGamePiece && clickedObject.TryGetComponent<BoardTile>(out var endTile))
             {
                 // TODO: Fix this BS. Need to somehow handle who controls the flow and where. Shouldn't be getting the board here >.>
-                var startTile = GameObject.Find("GameBoard").GetComponent<GameBoard.GameBoard>()
-                    .GetTileFromMatrix(this._selectedGamePiece.GetComponent<BasePiece>().CurrentPieceCoordinates.x,
+                var startTile = this._gameBoardScript.GetTileFromMatrix(this._selectedGamePiece.GetComponent<BasePiece>().CurrentPieceCoordinates.x,
                         this._selectedGamePiece.GetComponent<BasePiece>().CurrentPieceCoordinates.y);
                 
-                this._selectedGamePiece.GetComponent<BasePiece>().MoveAction(startTile.GetComponent<GameBoard.BoardTile>(), endTile);
+                this._selectedGamePiece.GetComponent<BasePiece>().MoveAction(startTile.GetComponent<BoardTile>(), endTile);
                 this.DeselectGamePiece();
                 return;
             }

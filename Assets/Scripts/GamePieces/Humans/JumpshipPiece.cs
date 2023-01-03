@@ -46,14 +46,14 @@ namespace GamePieces.Humans
             // Standalone move mechanic
             
             int directions = movesXAxis.Length;
-            var gameBoard = GameObject.Find("GameBoard");
-            var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
+            var gameBoard = GameBoard.GameBoard.Board;
+            var boardMatrix = GameBoard.GameBoard.Board.BoardMatrix;
 
             for (int i = 0; i < directions; i++)
             {
                 var newPosition = new Point(this.currentTilePosition.x + movesXAxis[i],
                                             this.currentTilePosition.y + movesYAxis[i]);
-                if (!gameBoard.GetComponent<GameBoard.GameBoard>().isPointWithinBoardLimits(newPosition))
+                if (!GameBoard.GameBoard.Board.isPointWithinBoardLimits(newPosition))
                     continue;
                 
                 // TODO: Code repetition with basic piece. Extract to a method 

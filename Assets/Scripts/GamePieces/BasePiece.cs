@@ -89,8 +89,8 @@ namespace GamePieces
             if (!this.isActive)
                 return;
             
-            var gameBoard = GameObject.Find("GameBoard");
-            var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
+            var gameBoard = GameBoard.GameBoard.Board;
+            var boardMatrix = gameBoard.BoardMatrix;
 
             ListPossibleMovesFromPosition();
             
@@ -111,8 +111,8 @@ namespace GamePieces
             if (!this.isActive)
                 return;
             
-            var gameBoard = GameObject.Find("GameBoard");
-            var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
+            var gameBoard = GameBoard.GameBoard.Board;
+            var boardMatrix = gameBoard.BoardMatrix;
 
             ListThreatenedTiles();
 
@@ -206,8 +206,8 @@ namespace GamePieces
         {
             // TODO: Extract actions to a separate class to avoid the repetition in move and attack.
             int shootingDirections = this.attacksXAxis.Length;
-            var gameBoard = GameObject.Find("GameBoard");
-            var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
+            var gameBoard = GameBoard.GameBoard.Board;
+            var boardMatrix = gameBoard.BoardMatrix;
 
             for (int direction = 0; direction < shootingDirections; direction++)
             {
@@ -239,8 +239,8 @@ namespace GamePieces
         {
             // TODO Simplify here by Getting directly the script and not only game object (we need the scripts anyways)
             int directions = this.movesXAxis.Length;
-            var gameBoard = GameObject.Find("GameBoard");
-            var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
+            var gameBoard = GameBoard.GameBoard.Board;
+            var boardMatrix = gameBoard.BoardMatrix;
 
             for (int direction = 0; direction < directions; direction++)
             {

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GamePieces;
 using UnityEngine;
 using Utils;
@@ -6,11 +7,15 @@ namespace GameBoard
 {
     public class BoardTile: MonoBehaviour
     {
+        /*---------------STATICS---------------*/
+        private static BoardTile _instance;
+        public static BoardTile Tile => _instance;
+
         /*---------------PRIVATE---------------*/
-        [SerializeField] private Sprite _tileSprite;
+        private Sprite _tileSprite;
         private float _tileHeight;
         private float _tileWidth;
-        [SerializeField] private bool _isPassable;
+        private bool _isPassable;
         private Point _objectCoordinates;
         private GameObject _occupyingUnit;
 
@@ -20,6 +25,7 @@ namespace GameBoard
             this._tileHeight = Defines.GameBoardConstants.TILE_HEIGHT;
             this._tileWidth = Defines.GameBoardConstants.TILE_WIDTH;
             this._isPassable = true;
+            _instance = this;
         }
         
         /*---------------PUBLIC----------------*/
@@ -47,6 +53,7 @@ namespace GameBoard
         {
             return this._occupyingUnit is not null;
         }
+
         
         public float TileHeight => _tileHeight;
         public float TileWidth => _tileWidth;

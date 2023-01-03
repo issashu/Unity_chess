@@ -23,14 +23,12 @@ namespace Managers
          [SerializeField] private List<GameObject> _spawnedHumanPieces;
          [SerializeField] private List<GameObject> _spawnedAIPieces;
          [SerializeField] private List<GameObject> _spawnedAICommandUnits;
-         [SerializeField] private GameObject _gameBoard;
-        
-        private void Awake()
+
+         private void Awake()
         { 
             this._spawnedHumanPieces = new List<GameObject>();
             this._spawnedAIPieces = new List<GameObject>();
             this._spawnedAICommandUnits = new List<GameObject>();
-            this._gameBoard = GameObject.Find("GameBoard");
             // TODO Think of a way to search faster for any alive command units
         }
         

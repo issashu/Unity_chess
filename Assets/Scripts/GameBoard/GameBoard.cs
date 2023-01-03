@@ -41,18 +41,18 @@ namespace GameBoard
             boardTile.AddComponent<SpriteRenderer>();
             boardTile.AddComponent<BoxCollider2D>();
             
-            boardTile.GetComponent<SpriteRenderer>().sprite = boardTile.GetComponent<BoardTile>().TileSprite;
+            boardTile.GetComponent<SpriteRenderer>().sprite = BoardTile.Tile.TileSprite;
             boardTile.GetComponent<SpriteRenderer>().sortingLayerName = GameBoardConstants.BOARD_TILES_LAYER;
             boardTile.GetComponent<Collider2D>().isTrigger = true;
             boardTile.GetComponent<BoxCollider2D>().size = new Vector2(1.21f, 0.78f);
             
-            var height = boardTile.GetComponent<BoardTile>().TileHeight;
-            var width = boardTile.GetComponent<BoardTile>().TileWidth;
+            var height = BoardTile.Tile.TileHeight;
+            var width = BoardTile.Tile.TileWidth;
             var xAxisPosition = (boardX * height + boardY * width) * GameBoardConstants.HALF;
             var yAxisPosition = (boardX * height - boardY * width) * GameBoardConstants.QUARTER;
             
             boardTile.transform.position = new Vector2(xAxisPosition, yAxisPosition);
-            boardTile.GetComponent<BoardTile>().UpdateTileGridPosition(boardX, boardY);
+            BoardTile.Tile.UpdateTileGridPosition(boardX, boardY);
             boardTile.transform.parent = transform;
 
             return boardTile;

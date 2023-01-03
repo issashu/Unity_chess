@@ -45,7 +45,7 @@ namespace GamePieces.Drones
         {
             // TODO: Extract actions to a separate class to avoid the repetition in move and attack.
             int shootingDirections = this.attacksXAxis.Length;
-            var gameBoard = GameObject.Find("GameBoard");
+            var gameBoard = GameBoard.GameBoard.Board;
 
             for (int direction = 0; direction < shootingDirections; direction++)
             {
@@ -54,7 +54,7 @@ namespace GamePieces.Drones
                     var attackTile = new Point(this.currentTilePosition.x + (distance * this.attacksXAxis[direction]),
                         this.currentTilePosition.y + (distance * this.attacksYAxis[direction]));
                     
-                    if (!gameBoard.GetComponent<GameBoard.GameBoard>().isPointWithinBoardLimits(attackTile))
+                    if (!gameBoard.isPointWithinBoardLimits(attackTile))
                         continue;
                     
                     this.threatenedTilesFromPosition.Add(attackTile);

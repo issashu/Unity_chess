@@ -15,6 +15,8 @@ namespace Managers
     public class GameManager : MonoBehaviour
     {
         private static GameManager _instance;
+        public static GameManager Instance => _instance;
+        
         private int _gameDifficulty;
         private GameObject _gameBoard;
         private GameObject _gamePieces;
