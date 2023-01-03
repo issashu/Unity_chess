@@ -67,6 +67,11 @@ namespace GamePieces
             {
                 OnHealthZero?.Invoke(this, this);
             }
+
+            if (this.allowedActions["move"] == false && this.allowedActions["attack"] == false)
+            {
+                this.DeactivatePiece();
+            }
         }
 
         public virtual void SetCurrentPosition(int x, int y)
@@ -125,6 +130,7 @@ namespace GamePieces
             // TODO: Add logic for clearing previous positions
             this.transform.position = targetLocation.transform.position;
             targetLocation.SetOccupant(this.GameObject());
+            this.allowedActions["move"] = false;
             this.validMovesFromPosition.Clear();
             this.threatenedTilesFromPosition.Clear();
         }
@@ -135,6 +141,7 @@ namespace GamePieces
                 return;
            
             target.TakeDamage(damageDone);
+            this.allowedActions["attack"] = false;
             this.threatenedTilesFromPosition.Clear();
         }
 
@@ -148,13 +155,31 @@ namespace GamePieces
             }
         }
 
-        public void OnDestroy()
+        public virtual void OnDestroy()
         {
             // TODO Exit gracefully or just deactivate gameObjects in order not to throw exceptions on exit
             /*var boardTilePieceIsOn = GameObject.Find($"Tile {this.currentTilePosition.x} {this.currentTilePosition.y}");
             boardTilePieceIsOn.GetComponent<BoardTile>().ClearOccupant();*/
             this.isAlive = false;
             Debug.Log($"{this.name} has been destroyed");                                                                                                                                
+        }
+
+        public virtual void ChangePieceColor(Color newColor)
+        {
+            this.GetComponent<SpriteRenderer>().material.color = newColor;
+        }
+
+        public virtual void DeactivatePiece()
+        {
+            // TODO Move to Piece Manager
+            this.isActive = false;
+            ChangePieceColor(Color.grey);
+        }
+        
+        public virtual void ActivatePiece()
+        {
+            this.isActive = false;
+            ChangePieceColor(Color.white);
         }
 
         protected virtual void ListThreatenedTiles()

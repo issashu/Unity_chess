@@ -2,6 +2,7 @@ using System;
 using Defines;
 using GameBoard;
 using GamePieces;
+using Managers;
 using Utils;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace Utils
         
         private void Update()
         {
-            // TODO Calling Get component in Update. This is very very very bad...
+            // TODO Make it an event in some Manager
             if (Input.GetMouseButtonDown(_leftMouseButton))
             {
                 this._target = GetMouseRealTarget();
@@ -63,14 +64,20 @@ namespace Utils
             
             if (!this._selectedGamePiece && clickedObject.TryGetComponent<BasePiece>(out this._selectedGamePieceScript))
                 this._selectedGamePiece = clickedObject;
-            
-            if (!this._selectedGamePieceScript.IsPieceActive)
+
+            //if (PieceManager.arePiecesSameTeam(this.)
+
+            if (!this._selectedGamePieceScript.IsPieceActive) 
                 return;
 
-            this._selectedGamePieceScript.HighlightMovePath();
-            this._selectedGamePieceScript.HighlightThreatenedTiles();
+            if (this._selectedGamePieceScript.AllowedActions["move"])
+                this._selectedGamePieceScript.HighlightMovePath();
+            
+            if (this._selectedGamePieceScript.AllowedActions["attack"])
+                this._selectedGamePieceScript.HighlightThreatenedTiles();
             
             // TODO: Fix this and combine the two IFs
+            // TODO MAke methods of the IFs, so it is easier to track and fix.
             // TODO Extract somehow the validation checks BEFORE calling the actions themselves. Maybe make actions as events that piece is listening for
             if (this._selectedGamePiece && clickedObject.TryGetComponent<BoardTile>(out var endTile))
             {
@@ -87,14 +94,13 @@ namespace Utils
 
             if (this._selectedGamePiece && clickedObject.TryGetComponent<BasePiece>(out var attackTarget))
             {
-                // TODO Also we do have a method in the Piece Manager to compare teams >.> Use it!
-                if (attackTarget.PieceFaction != this._selectedGamePiece.GetComponent<BasePiece>().PieceFaction)
-                {
-                    int damageDone = this._selectedGamePiece.GetComponent<BasePiece>().DamageDone;
-                    this._selectedGamePiece.GetComponent<BasePiece>().AttackAction(attackTarget, damageDone);
-                    this.DeselectGamePiece();
+                if (PieceManager.arePiecesSameTeam(attackTarget, this._selectedGamePiece.GetComponent<BasePiece>()))
                     return;
-                }
+                
+                var damageDone = this._selectedGamePiece.GetComponent<BasePiece>().DamageDone;
+                this._selectedGamePiece.GetComponent<BasePiece>().AttackAction(attackTarget, damageDone);
+                this.DeselectGamePiece();
+                return;
             }
         }
 

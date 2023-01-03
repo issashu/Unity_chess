@@ -45,7 +45,7 @@ namespace Managers
             SetupDreadnoughtPieces();
 
             BasePiece.OnHealthZero += DestroyPiece;
-            TurnManager.OnTurnSwitch += SwitchActivePieces;
+            TurnManager.OnTurnSwitch += (sender, newFaction) => SwitchActiveFaction(sender, newFaction);
         }
 
         private void Update()
@@ -277,7 +277,7 @@ namespace Managers
             } 
         }
 
-        public bool arePiecesSameTeam(BasePiece one, BasePiece other)
+        public static bool arePiecesSameTeam(BasePiece one, BasePiece other)
         {
             return one.PieceFaction == other.PieceFaction;
         }
@@ -302,7 +302,7 @@ namespace Managers
             Destroy(deadPiece.gameObject);
         }
         
-        private void SwitchActivePieces(object sender, FactionEnum newFaction)
+        private void SwitchActiveFaction(object sender, FactionEnum newFaction)
         {
             switch (newFaction)
             {
@@ -311,22 +311,13 @@ namespace Managers
                     {
                         unit.GetComponent<BasePiece>().IsPieceActive = true;
                     }
-                    
-                    foreach (var unit in this._spawnedAIPieces)
-                    {
-                        unit.GetComponent<BasePiece>().IsPieceActive = false;
-                    }
-                    
+
                     break;
                 
                 case FactionEnum.Drones:
                     foreach (var unit in this._spawnedAIPieces)
                     {
                         unit.GetComponent<BasePiece>().IsPieceActive = true;
-                    }
-                    foreach (var unit in this._spawnedHumanPieces)
-                    {
-                        unit.GetComponent<BasePiece>().IsPieceActive = false;
                     }
 
                     break;
