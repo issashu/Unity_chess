@@ -216,7 +216,7 @@ namespace GamePieces
                     var attackTile = new Point(this.currentTilePosition.x + (distance * this.attacksXAxis[direction]),
                         this.currentTilePosition.y + (distance * this.attacksYAxis[direction]));
                     // TODO Redo the ifs...too ugly with so many just sending a continue :/
-                    if (!gameBoard.GetComponent<GameBoard.GameBoard>().isPointWithinBoardLimits(attackTile))
+                    if (!gameBoard.isPointWithinBoardLimits(attackTile))
                         continue;
 
                     var tile = boardMatrix[attackTile.x, attackTile.y].GetComponent<BoardTile>();
@@ -248,7 +248,7 @@ namespace GamePieces
                 {
                     var newPosition = new Point(this.currentTilePosition.x + (distance * this.movesXAxis[direction]),
                         this.currentTilePosition.y + (distance * this.movesYAxis[direction]));
-                    if (!gameBoard.GetComponent<GameBoard.GameBoard>().isPointWithinBoardLimits(newPosition))
+                    if (!gameBoard.isPointWithinBoardLimits(newPosition))
                         continue;
 
                     var tile = boardMatrix[newPosition.x, newPosition.y];
