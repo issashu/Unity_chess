@@ -18,6 +18,7 @@ namespace Managers
         private int _gameDifficulty;
         private GameObject _gameBoard;
         private GameObject _gamePieces;
+        private GameObject _turnSystem;
 
         private void Awake()
         {
@@ -36,7 +37,11 @@ namespace Managers
             this._gameBoard.AddComponent<GameBoard.GameBoard>();
 
             this._gamePieces = new GameObject("GamePieces");
-            this._gamePieces.AddComponent<Managers.PieceManager>();
+            this._gamePieces.AddComponent<PieceManager>();
+
+            this._turnSystem = new GameObject("TurnSystem");
+            this._turnSystem.AddComponent<TurnManager>();
+
         }
 
         private void Start()

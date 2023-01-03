@@ -45,7 +45,7 @@ namespace Managers
             SetupDreadnoughtPieces();
 
             BasePiece.OnHealthZero += DestroyPiece;
-            TurnManager.OnTurnSwitch += (sender, newFaction) => SwitchActiveFaction(sender, newFaction);
+            TurnManager.OnTurnSwitch += SwitchActiveFaction;
         }
 
         private void Update()
@@ -309,7 +309,15 @@ namespace Managers
                 case FactionEnum.Humans:
                     foreach (var unit in this._spawnedHumanPieces)
                     {
-                        unit.GetComponent<BasePiece>().IsPieceActive = true;
+                        var unitScript = unit.GetComponent<BasePiece>();
+                        unitScript.ActivatePiece();
+                        unitScript.ResetPieceActions();
+                    }
+                    
+                    foreach (var unit in this._spawnedAIPieces)
+                    {
+                        var unitScript = unit.GetComponent<BasePiece>();
+                        unitScript.DeactivatePiece();
                     }
 
                     break;
@@ -317,7 +325,15 @@ namespace Managers
                 case FactionEnum.Drones:
                     foreach (var unit in this._spawnedAIPieces)
                     {
-                        unit.GetComponent<BasePiece>().IsPieceActive = true;
+                        var unitScript = unit.GetComponent<BasePiece>();
+                        unitScript.ActivatePiece();
+                        unitScript.ResetPieceActions();
+                    }
+                    
+                    foreach (var unit in this._spawnedHumanPieces)
+                    {
+                        var unitScript = unit.GetComponent<BasePiece>();
+                        unitScript.DeactivatePiece();
                     }
 
                     break;

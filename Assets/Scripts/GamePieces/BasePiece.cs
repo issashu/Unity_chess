@@ -83,9 +83,15 @@ namespace GamePieces
         // TODO Do rethink to extract the validations in a separate class, so that pieces do not have access to board more then necessary. See UML
         public virtual void HighlightMovePath()
         {
+            if (!this.AllowedActions["move"])
+                return;
+
+            if (!this.isActive)
+                return;
+            
             var gameBoard = GameObject.Find("GameBoard");
             var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
-            
+
             ListPossibleMovesFromPosition();
             
             // TODO: Change foreach loop into simple for loop, since it should cost less resources
@@ -99,6 +105,12 @@ namespace GamePieces
         public virtual void HighlightThreatenedTiles()
         {
             // TODO: Extract to Piece Manager and unify the two highlights. Code is almost the same except color...
+            if (!this.AllowedActions["attack"])
+                return;
+            
+            if (!this.isActive)
+                return;
+            
             var gameBoard = GameObject.Find("GameBoard");
             var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
 
@@ -115,7 +127,7 @@ namespace GamePieces
          * <summary>Method to move the game piece to another location on the board. Returns true on success and false
          * on failure</summary>
          */
-        protected virtual void MovePiece(BoardTile targetLocation)
+        protected virtual void MovePiece(BoardTile startLocation, BoardTile targetLocation)
         {
             // TODO: Rethink logic to get either a point and see, if it is allowed square to move or do that check before move action
             // If we pass nothing, just bail out
@@ -129,7 +141,9 @@ namespace GamePieces
             this.SetCurrentPosition(Mathf.RoundToInt(moveLocationVector.x), Mathf.RoundToInt(moveLocationVector.y));
             // TODO: Add logic for clearing previous positions
             this.transform.position = targetLocation.transform.position;
+            
             targetLocation.SetOccupant(this.GameObject());
+            startLocation.ClearOccupant();
             this.allowedActions["move"] = false;
             this.validMovesFromPosition.Clear();
             this.threatenedTilesFromPosition.Clear();
@@ -139,13 +153,13 @@ namespace GamePieces
         {
             if (!this.threatenedTilesFromPosition.Contains(target.currentTilePosition))
                 return;
-           
+
             target.TakeDamage(damageDone);
             this.allowedActions["attack"] = false;
             this.threatenedTilesFromPosition.Clear();
         }
 
-        protected virtual void TakeDamage(int damage)
+        public virtual void TakeDamage(int damage)
         {
             this.hitPoints -= damage;
             
@@ -178,8 +192,14 @@ namespace GamePieces
         
         public virtual void ActivatePiece()
         {
-            this.isActive = false;
+            this.isActive = true;
             ChangePieceColor(Color.white);
+        }
+
+        public virtual void ResetPieceActions()
+        {
+            this.allowedActions["move"] = true;
+            this.allowedActions["attack"] = true;
         }
 
         protected virtual void ListThreatenedTiles()
@@ -197,28 +217,27 @@ namespace GamePieces
                         this.currentTilePosition.y + (distance * this.attacksYAxis[direction]));
                     // TODO Redo the ifs...too ugly with so many just sending a continue :/
                     if (!gameBoard.GetComponent<GameBoard.GameBoard>().isPointWithinBoardLimits(attackTile))
-                    {
                         continue;
-                    }
-                    
+
                     var tile = boardMatrix[attackTile.x, attackTile.y].GetComponent<BoardTile>();
                     if (!tile.isTileOccupied())
                         continue;
+                    // TODO Add here logic not to continue targeting beyond first unit 
 
                     if (tile.TileOccupant.GetComponent<BasePiece>().PieceFaction == this.gameTeam) 
                         //TODO We have a method to compare teams. use it!
                     {
                         continue;
                     }
-
                     this.threatenedTilesFromPosition.Add(attackTile);
+                    break; // We stop in any given direction after we hit first unit. Can be overriden for say..piercing bullets
                 }
             }
         }
 
         protected virtual void ListPossibleMovesFromPosition()
         {
-            // TODO Simplify here by Getting directly the scrtipt and not only game object (we need the scripts anyways)
+            // TODO Simplify here by Getting directly the script and not only game object (we need the scripts anyways)
             int directions = this.movesXAxis.Length;
             var gameBoard = GameObject.Find("GameBoard");
             var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
@@ -234,7 +253,7 @@ namespace GamePieces
 
                     var tile = boardMatrix[newPosition.x, newPosition.y];
                     if (tile.GetComponent<BoardTile>().isTileOccupied())
-                        continue;
+                        break;
 
                     //Add valid move tile, only if no piece is there.
                     this.validMovesFromPosition.Add(newPosition);
@@ -258,7 +277,7 @@ namespace GamePieces
         public Sprite UnitSprite => gameSprite;
         public Dictionary<string, bool> AllowedActions => allowedActions;
         public Dictionary<string, float> BoxColliderSettings => boxColliderSettings;
-        public void MoveAction(BoardTile targetLocation) => MovePiece(targetLocation);
+        public void MoveAction(BoardTile startLocation, BoardTile targetLocation) => MovePiece(startLocation, targetLocation);
     }
 }
 

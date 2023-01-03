@@ -57,25 +57,32 @@ namespace Utils
         {
             if (clickedObject is null)
                 return;
+            
+            if (!this._selectedGamePiece)
+            {
+                if (clickedObject.GetComponent<BoardTile>())
+                    return;
 
-            if (!this._selectedGamePiece && clickedObject.GetComponent<BoardTile>())
-                //TODO: Optional add some indication visual that a tile was clicked
+                if (clickedObject.TryGetComponent<BasePiece>(out this._selectedGamePieceScript))
+                {
+                    if (this._selectedGamePieceScript.IsPieceActive)
+                    {
+                        this._selectedGamePiece = clickedObject;
+                        this._selectedGamePieceScript.HighlightMovePath();
+                        this._selectedGamePieceScript.HighlightThreatenedTiles();
+                        return;
+                    }
+                    
+                }
+                    
+            }
+            
+            if (this._selectedGamePiece == clickedObject)
+            {
+                this.DeselectGamePiece();
                 return;
-            
-            if (!this._selectedGamePiece && clickedObject.TryGetComponent<BasePiece>(out this._selectedGamePieceScript))
-                this._selectedGamePiece = clickedObject;
+            }
 
-            //if (PieceManager.arePiecesSameTeam(this.)
-
-            if (!this._selectedGamePieceScript.IsPieceActive) 
-                return;
-
-            if (this._selectedGamePieceScript.AllowedActions["move"])
-                this._selectedGamePieceScript.HighlightMovePath();
-            
-            if (this._selectedGamePieceScript.AllowedActions["attack"])
-                this._selectedGamePieceScript.HighlightThreatenedTiles();
-            
             // TODO: Fix this and combine the two IFs
             // TODO MAke methods of the IFs, so it is easier to track and fix.
             // TODO Extract somehow the validation checks BEFORE calling the actions themselves. Maybe make actions as events that piece is listening for
@@ -86,8 +93,7 @@ namespace Utils
                     .GetTileFromMatrix(this._selectedGamePiece.GetComponent<BasePiece>().CurrentPieceCoordinates.x,
                         this._selectedGamePiece.GetComponent<BasePiece>().CurrentPieceCoordinates.y);
                 
-                this._selectedGamePiece.GetComponent<BasePiece>().MoveAction(endTile);
-                startTile.GetComponent<BoardTile>().ClearOccupant();
+                this._selectedGamePiece.GetComponent<BasePiece>().MoveAction(startTile.GetComponent<GameBoard.BoardTile>(), endTile);
                 this.DeselectGamePiece();
                 return;
             }

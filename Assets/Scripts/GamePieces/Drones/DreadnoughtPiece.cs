@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Enums;
+using Managers;
 using UnityEngine;
 using Utils;
 
@@ -39,5 +40,74 @@ namespace GamePieces.Drones
                 {"sizeX", 1.40f},   {"sizeY", 2.88f}
             };
         }
+        
+        protected override void ListThreatenedTiles()
+        {
+            // TODO: Extract actions to a separate class to avoid the repetition in move and attack.
+            int shootingDirections = this.attacksXAxis.Length;
+            var gameBoard = GameObject.Find("GameBoard");
+
+            for (int direction = 0; direction < shootingDirections; direction++)
+            {
+                for (int distance = 1; distance <= this.MaxAttackDistance; distance++)
+                {
+                    var attackTile = new Point(this.currentTilePosition.x + (distance * this.attacksXAxis[direction]),
+                        this.currentTilePosition.y + (distance * this.attacksYAxis[direction]));
+                    
+                    if (!gameBoard.GetComponent<GameBoard.GameBoard>().isPointWithinBoardLimits(attackTile))
+                        continue;
+                    
+                    this.threatenedTilesFromPosition.Add(attackTile);
+                    break;
+                }
+            }
+        }
+        
+        public override void HighlightThreatenedTiles()
+        {
+            if (!this.AllowedActions["attack"])
+                return;
+            
+            if (!this.isActive)
+                return;
+            
+            // TODO: Extract to Piece Manager and unify the two highlights. Code is almost the same except color...
+            var gameBoard = GameObject.Find("GameBoard");
+            var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
+
+            ListThreatenedTiles();
+
+            foreach (var point in this.threatenedTilesFromPosition)
+            {
+                var tile = boardMatrix[point.x, point.y].GetComponent<GameBoard.BoardTile>();
+                if (!tile.isTileOccupied())
+                    continue;
+                
+                var targetUnit = tile.TileOccupant.GetComponent<BasePiece>();
+                if(PieceManager.arePiecesSameTeam(this, targetUnit))
+                    continue;
+                
+                tile.ChangeTileColorTint(Color.red);
+            }
+        }
+        
+        public override void AttackAction(BasePiece target, int damageDone)
+        {
+            foreach (var location in this.threatenedTilesFromPosition)
+            {
+                var tile = ConversionUtils.GetTileAtCoordinates(location);
+                if (!tile.isTileOccupied())
+                    continue;
+                
+                var targetUnit = tile.TileOccupant.GetComponent<BasePiece>();
+                if (!PieceManager.arePiecesSameTeam(this, targetUnit))
+                    targetUnit.TakeDamage(damageDone);
+            }
+            
+            this.allowedActions["attack"] = false;
+            this.threatenedTilesFromPosition.Clear();
+        }
+        
+        
     }
 }

@@ -1,6 +1,6 @@
 namespace Utils
 {
-    public class Stack
+    public class ObjectRefferences
     {
         
     }

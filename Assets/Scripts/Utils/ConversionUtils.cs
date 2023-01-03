@@ -10,6 +10,7 @@ namespace Utils
 {
     public class ConversionUtils
     {
+
         public static Vector2 WorldPositionFromCoordinates(int x, int y, int objectSize=1)
         {
             return new Vector2(x, y) * objectSize;
@@ -20,6 +21,12 @@ namespace Utils
             var tmpPoint = new Point(tile.XCoordinate, tile.YCoordinate);
 
             return tmpPoint;
+        }
+
+        public static BoardTile GetTileAtCoordinates(Point coordinates)
+        {
+            var boardMatrix = GameObject.Find("GameBoard").GetComponent<GameBoard.GameBoard>().BoardMatrix;
+            return boardMatrix[coordinates.x, coordinates.y].GetComponent<BoardTile>();
         }
     }
     
