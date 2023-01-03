@@ -72,8 +72,7 @@ namespace GamePieces.Drones
                 return;
             
             // TODO: Extract to Piece Manager and unify the two highlights. Code is almost the same except color...
-            var gameBoard = GameObject.Find("GameBoard");
-            var boardMatrix = gameBoard.GetComponent<GameBoard.GameBoard>().BoardMatrix;
+            var boardMatrix = GameBoard.GameBoard.Board.BoardMatrix;
 
             ListThreatenedTiles();
 

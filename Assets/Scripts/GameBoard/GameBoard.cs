@@ -9,15 +9,18 @@ namespace GameBoard
 {
     public class GameBoard: MonoBehaviour
     {
-        [SerializeField]private int _boardHeight;
-        [SerializeField]private int _boardWidth;
+        private static GameBoard _instance;
+        private int _boardHeight;
+        private int _boardWidth;
         private GameObject[,] _boardMatrix;
 
         public ref GameObject[,] BoardMatrix => ref _boardMatrix;
+        public static GameBoard Board => _instance;
        
 
         private void Awake()
         {
+            _instance = this;
             this._boardHeight = Defines.GameBoardConstants.BOARD_HEIGHT;
             this._boardWidth = Defines.GameBoardConstants.BOARD_WIDTH;
             this._boardMatrix = new GameObject[this._boardHeight, this._boardWidth];
