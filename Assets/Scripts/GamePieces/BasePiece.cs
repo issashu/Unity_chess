@@ -90,14 +90,14 @@ namespace GamePieces
                 return;
             
             var gameBoard = GameBoard.GameBoard.Board;
-            var boardMatrix = gameBoard.BoardMatrix;
+            var boardMatrix = gameBoard.GameBoardMatrix;
 
             ListPossibleMovesFromPosition();
             
             // TODO: Change foreach loop into simple for loop, since it should cost less resources
             foreach (var point in this.validMovesFromPosition)
             {
-                var tile = boardMatrix[point.x, point.y].GetComponent<BoardTile>();
+                var tile = boardMatrix[point.x, point.y];
                 tile.ChangeTileColorTint(Color.green);
             }
         }
@@ -112,13 +112,13 @@ namespace GamePieces
                 return;
             
             var gameBoard = GameBoard.GameBoard.Board;
-            var boardMatrix = gameBoard.BoardMatrix;
+            var boardMatrix = gameBoard.GameBoardMatrix;
 
             ListThreatenedTiles();
 
             foreach (var point in this.threatenedTilesFromPosition)
             {
-                var tile = boardMatrix[point.x, point.y].GetComponent<BoardTile>();
+                var tile = boardMatrix[point.x, point.y];
                 tile.ChangeTileColorTint(Color.red);
             }
         }
@@ -207,7 +207,7 @@ namespace GamePieces
             // TODO: Extract actions to a separate class to avoid the repetition in move and attack.
             int shootingDirections = this.attacksXAxis.Length;
             var gameBoard = GameBoard.GameBoard.Board;
-            var boardMatrix = gameBoard.BoardMatrix;
+            var boardMatrix = gameBoard.GameBoardMatrix;
 
             for (int direction = 0; direction < shootingDirections; direction++)
             {
@@ -219,7 +219,7 @@ namespace GamePieces
                     if (!gameBoard.isPointWithinBoardLimits(attackTile))
                         continue;
 
-                    var tile = boardMatrix[attackTile.x, attackTile.y].GetComponent<BoardTile>();
+                    var tile = boardMatrix[attackTile.x, attackTile.y];
                     if (!tile.isTileOccupied())
                         continue;
                     // TODO Add here logic not to continue targeting beyond first unit 
@@ -240,7 +240,7 @@ namespace GamePieces
             // TODO Simplify here by Getting directly the script and not only game object (we need the scripts anyways)
             int directions = this.movesXAxis.Length;
             var gameBoard = GameBoard.GameBoard.Board;
-            var boardMatrix = gameBoard.BoardMatrix;
+            var boardMatrix = gameBoard.GameBoardMatrix;
 
             for (int direction = 0; direction < directions; direction++)
             {
@@ -252,7 +252,7 @@ namespace GamePieces
                         continue;
 
                     var tile = boardMatrix[newPosition.x, newPosition.y];
-                    if (tile.GetComponent<BoardTile>().isTileOccupied())
+                    if (tile.isTileOccupied())
                         break;
 
                     //Add valid move tile, only if no piece is there.

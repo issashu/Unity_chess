@@ -72,13 +72,13 @@ namespace GamePieces.Drones
                 return;
             
             // TODO: Extract to Piece Manager and unify the two highlights. Code is almost the same except color...
-            var boardMatrix = GameBoard.GameBoard.Board.BoardMatrix;
+            var boardMatrix = GameBoard.GameBoard.Board.GameBoardMatrix;
 
             ListThreatenedTiles();
 
             foreach (var point in this.threatenedTilesFromPosition)
             {
-                var tile = boardMatrix[point.x, point.y].GetComponent<GameBoard.BoardTile>();
+                var tile = boardMatrix[point.x, point.y];
                 if (!tile.isTileOccupied())
                     continue;
                 

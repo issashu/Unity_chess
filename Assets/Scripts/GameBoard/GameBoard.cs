@@ -12,9 +12,9 @@ namespace GameBoard
         private static GameBoard _instance;
         private int _boardHeight;
         private int _boardWidth;
-        private GameObject[,] _boardMatrix;
-
-        public ref GameObject[,] BoardMatrix => ref _boardMatrix;
+        private BoardTile[,] _boardMatrix;
+        
+        public ref BoardTile[,] GameBoardMatrix => ref _boardMatrix;
         public static GameBoard Board => _instance;
        
 
@@ -23,7 +23,7 @@ namespace GameBoard
             _instance = this;
             this._boardHeight = Defines.GameBoardConstants.BOARD_HEIGHT;
             this._boardWidth = Defines.GameBoardConstants.BOARD_WIDTH;
-            this._boardMatrix = new GameObject[this._boardHeight, this._boardWidth];
+            this._boardMatrix = new BoardTile[this._boardHeight, this._boardWidth];
 
             for (var x = 0; x < this._boardHeight; x++)
             {
@@ -34,7 +34,7 @@ namespace GameBoard
             }
         }
 
-        private GameObject SetupTileObject(int boardX, int boardY)
+        private BoardTile SetupTileObject(int boardX, int boardY)
         {
             var boardTile = new GameObject($"Tile {boardX} {boardY}");
             boardTile.AddComponent<BoardTile>();
@@ -55,10 +55,10 @@ namespace GameBoard
             BoardTile.Tile.UpdateTileGridPosition(boardX, boardY);
             boardTile.transform.parent = transform;
 
-            return boardTile;
+            return boardTile.GetComponent<BoardTile>();
         }
 
-        public GameObject GetTileFromMatrix(int x, int y)
+        public BoardTile GetTileFromMatrix(int x, int y)
         {
             return this._boardMatrix[x, y];
         }
@@ -67,7 +67,7 @@ namespace GameBoard
         {
             foreach (var tile in _boardMatrix)
             {
-                tile.GetComponent<BoardTile>().ChangeTileColorTint(Color.white);
+                tile.ChangeTileColorTint(Color.white);
             }
         }
 

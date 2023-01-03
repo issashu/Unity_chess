@@ -25,8 +25,8 @@ namespace Utils
 
         public static BoardTile GetTileAtCoordinates(Point coordinates)
         {
-            var boardMatrix = GameBoard.GameBoard.Board.BoardMatrix;
-            return boardMatrix[coordinates.x, coordinates.y].GetComponent<BoardTile>();
+            var boardMatrix = GameBoard.GameBoard.Board.GameBoardMatrix;
+            return boardMatrix[coordinates.x, coordinates.y];
         }
     }
     

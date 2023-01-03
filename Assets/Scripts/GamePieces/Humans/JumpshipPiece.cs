@@ -47,7 +47,7 @@ namespace GamePieces.Humans
             
             int directions = movesXAxis.Length;
             var gameBoard = GameBoard.GameBoard.Board;
-            var boardMatrix = GameBoard.GameBoard.Board.BoardMatrix;
+            var boardMatrix = gameBoard.GameBoardMatrix;
 
             for (int i = 0; i < directions; i++)
             {
