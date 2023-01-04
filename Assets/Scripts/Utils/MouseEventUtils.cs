@@ -66,13 +66,10 @@ namespace Utils
                     if (this._selectedGamePieceScript.IsPieceActive)
                     {
                         this._selectedGamePiece = clickedObject;
-                        this._selectedGamePieceScript.HighlightMovePath();
-                        this._selectedGamePieceScript.HighlightThreatenedTiles();
+                        this.SelectGamePiece();
                         return;
                     }
-                    
                 }
-                    
             }
             
             if (this._selectedGamePiece == clickedObject)
@@ -81,36 +78,65 @@ namespace Utils
                 return;
             }
 
-            // TODO: Fix this and combine the two IFs
-            // TODO MAke methods of the IFs, so it is easier to track and fix.
-            // TODO Extract somehow the validation checks BEFORE calling the actions themselves. Maybe make actions as events that piece is listening for
-            if (this._selectedGamePiece && clickedObject.TryGetComponent<BoardTile>(out var endTile))
+            if (this._selectedGamePiece)
             {
-                // TODO: Fix this BS. Need to somehow handle who controls the flow and where. Shouldn't be getting the board here >.>
-                var startTile = Utils.ConversionUtils.GetTileAtPoint(this._selectedGamePiece.GetComponent<BasePiece>().CurrentPieceCoordinates);
-                
-                this._selectedGamePiece.GetComponent<BasePiece>().MoveAction(startTile, endTile);
-                this.DeselectGamePiece();
-                return;
-            }
-
-            if (this._selectedGamePiece && clickedObject.TryGetComponent<BasePiece>(out var attackTarget))
-            {
-                if (PieceManager.arePiecesSameTeam(attackTarget, this._selectedGamePiece.GetComponent<BasePiece>()))
+                if (clickedObject.TryGetComponent<BoardTile>(out var clickedTile))
+                {
+                    this.ExecuteMoveAction(clickedTile);
+                    this.DeselectGamePiece();
                     return;
-                
-                var damageDone = this._selectedGamePiece.GetComponent<BasePiece>().DamageDone;
-                this._selectedGamePiece.GetComponent<BasePiece>().AttackAction(attackTarget, damageDone);
-                this.DeselectGamePiece();
-                return;
+                }
+
+                if (clickedObject.TryGetComponent<BasePiece>(out var clickedPiece))
+                {
+                    this.ExecuteAttackAction(clickedPiece);
+                    this.DeselectGamePiece();
+                    return;
+                }
             }
         }
 
+        private void SelectGamePiece()
+        {
+            if (!this._selectedGamePieceScript)
+                return;
+            
+            this._selectedGamePieceScript.ChangePieceColor(Color.yellow);
+            this._selectedGamePieceScript.HighlightMovePath();
+            this._selectedGamePieceScript.HighlightThreatenedTiles();
+        }
+        
         private void DeselectGamePiece()
         {
+            if (!this._selectedGamePieceScript || !this._gameBoardScript)
+                return;
+            
             this._gameBoardScript.ClearBoardColors();
+            this._selectedGamePieceScript.ChangePieceColor(Color.white);
             this._selectedGamePiece = null;
             this._selectedGamePieceScript = null;
+        }
+        
+        private void ExecuteMoveAction(BoardTile destinationTile)
+        {
+            if (!this._selectedGamePieceScript)
+                return;
+            
+            var startTile = Utils.ConversionUtils.GetTileAtPoint(this._selectedGamePieceScript.CurrentPieceCoordinates);
+                
+            this._selectedGamePieceScript.MoveAction(startTile, destinationTile);
+        }
+
+        private void ExecuteAttackAction(BasePiece attackTarget)
+        {
+            if (!this._selectedGamePieceScript)
+                return;
+            
+            if (PieceManager.arePiecesSameTeam(attackTarget, this._selectedGamePieceScript))
+                return;
+                
+            var damageDone = this._selectedGamePieceScript.DamageDone;
+            this._selectedGamePieceScript.AttackAction(attackTarget, damageDone);
         }
     }
 }

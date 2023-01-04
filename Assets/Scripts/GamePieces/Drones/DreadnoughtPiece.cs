@@ -43,7 +43,6 @@ namespace GamePieces.Drones
         
         protected override void ListThreatenedTiles()
         {
-            // TODO: Extract actions to a separate class to avoid the repetition in move and attack.
             int shootingDirections = this.attacksXAxis.Length;
             var gameBoard = GameBoard.GameBoard.Board;
 
@@ -82,8 +81,7 @@ namespace GamePieces.Drones
                 if (!tile.isTileOccupied())
                     continue;
                 
-                var targetUnit = tile.TileOccupant.GetComponent<BasePiece>();
-                if(PieceManager.arePiecesSameTeam(this, targetUnit))
+                if(PieceManager.arePiecesSameTeam(this, tile.TileOccupant))
                     continue;
                 
                 tile.ChangeTileColorTint(Color.red);
@@ -98,9 +96,8 @@ namespace GamePieces.Drones
                 if (!tile.isTileOccupied())
                     continue;
                 
-                var targetUnit = tile.TileOccupant.GetComponent<BasePiece>();
-                if (!PieceManager.arePiecesSameTeam(this, targetUnit))
-                    targetUnit.TakeDamage(damageDone);
+                if (!PieceManager.arePiecesSameTeam(this, tile.TileOccupant))
+                    tile.TileOccupant.TakeDamage(damageDone);
             }
             
             this.allowedActions["attack"] = false;

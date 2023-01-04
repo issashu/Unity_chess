@@ -17,7 +17,7 @@ namespace GameBoard
         private float _tileWidth;
         private bool _isPassable;
         private Point _objectCoordinates;
-        private GameObject _occupyingUnit;
+        private BasePiece _occupyingUnit;
 
         public SpriteRenderer TileSpriteRenderer => this.GetComponent<SpriteRenderer>();
 
@@ -41,7 +41,7 @@ namespace GameBoard
             this.TileSpriteRenderer.material.color = coloToChangeTo;
         }
 
-        public void SetOccupant(GameObject Occupant)
+        public void SetOccupant(BasePiece Occupant)
         {
             this._occupyingUnit = Occupant;
         }
@@ -64,6 +64,6 @@ namespace GameBoard
         public int XCoordinate => _objectCoordinates.x;
         public int YCoordinate => _objectCoordinates.y;
 
-        public GameObject TileOccupant => _occupyingUnit;
+        public BasePiece TileOccupant => _occupyingUnit;
     }
 }

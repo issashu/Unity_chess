@@ -39,5 +39,11 @@ namespace GamePieces.Drones
                 {"sizeX", 1.16f},   {"sizeY", 2.34f}
             };
         }
+        
+        public override void ResetPieceActions()
+        {
+            this.allowedActions["move"] = true;
+            this.allowedActions["attack"] = false;
+        }
     }
 }

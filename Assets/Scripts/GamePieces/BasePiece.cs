@@ -129,21 +129,21 @@ namespace GamePieces
          */
         protected virtual void MovePiece(BoardTile startLocation, BoardTile targetLocation)
         {
-            // TODO: Rethink logic to get either a point and see, if it is allowed square to move or do that check before move action
-            // If we pass nothing, just bail out
+            if(!startLocation || !targetLocation)
+                return;
+            
             var moveLocationPoint = ConversionUtils.CreatePointObjectFromTile(targetLocation);
             if (!this.validMovesFromPosition.Contains(moveLocationPoint))
                 return;
             
-            var moveLocationVector = ConversionUtils.WorldPositionFromCoordinates(targetLocation.XCoordinate,
-                                                                                   targetLocation.YCoordinate);
             // TODO: Do check if we really need the SetCurrentPosition
+            var moveLocationVector = ConversionUtils.WorldPositionFromCoordinates(targetLocation.XCoordinate, targetLocation.YCoordinate);
             this.SetCurrentPosition(Mathf.RoundToInt(moveLocationVector.x), Mathf.RoundToInt(moveLocationVector.y));
-            // TODO: Add logic for clearing previous positions
-            this.transform.position = targetLocation.transform.position;
             
-            targetLocation.SetOccupant(this.GameObject());
+            this.transform.position = targetLocation.transform.position;
+            targetLocation.SetOccupant(this);
             startLocation.ClearOccupant();
+            
             this.allowedActions["move"] = false;
             this.validMovesFromPosition.Clear();
             this.threatenedTilesFromPosition.Clear();
@@ -162,7 +162,11 @@ namespace GamePieces
         public virtual void TakeDamage(int damage)
         {
             this.hitPoints -= damage;
-            
+            this.ValidateHealth();
+        }
+
+        protected virtual void ValidateHealth()
+        {
             if (this.hitPoints < 0)
             {
                 this.hitPoints = 0;
@@ -174,7 +178,7 @@ namespace GamePieces
             this.isAlive = false;
         }
 
-        protected virtual void ChangePieceColor(Color newColor)
+        public virtual void ChangePieceColor(Color newColor)
         {
             this.PieceSpriteRenderer.material.color = newColor;
         }

@@ -85,7 +85,7 @@ namespace Managers
                 int tileXPosition = Random.Range(0, GameBoardConstants.HUMANS_SPAWN_ROWS);
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
                 var chosenTile = ConversionUtils.GetTileAtCoordinates(tileXPosition, tileYPosition);
-                chosenTile.SetOccupant(gruntPiece);
+                chosenTile.SetOccupant(GetComponent<GamePieces.Humans.GruntPiece>());
                 
                 var tilePosition = chosenTile.transform.position;
                 var piecePosition = gruntPiece.transform;
@@ -118,7 +118,7 @@ namespace Managers
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
                 
                 var chosenTile = ConversionUtils.GetTileAtCoordinates(tileXPosition, tileYPosition);
-                chosenTile.SetOccupant(tankPiece);
+                chosenTile.SetOccupant(tankPiece.GetComponent<GamePieces.Humans.TankPiece>());
                 
                 var tilePosition = chosenTile.transform.position;
                 var piecePosition = tankPiece.transform;
@@ -149,7 +149,7 @@ namespace Managers
                 int tileXPosition = Random.Range(0, GameBoardConstants.HUMANS_SPAWN_ROWS);
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
                 var chosenTile = ConversionUtils.GetTileAtCoordinates(tileXPosition, tileYPosition);
-                chosenTile.SetOccupant(jumpshipPiece);
+                chosenTile.SetOccupant(jumpshipPiece.GetComponent<GamePieces.Humans.JumpshipPiece>());
                 
                 var tilePosition = chosenTile.transform.position;
                 var piecePosition = jumpshipPiece.transform;
@@ -185,7 +185,7 @@ namespace Managers
                 Debug.Log(tileXPosition);
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
                 var chosenTile = ConversionUtils.GetTileAtCoordinates(tileXPosition, tileYPosition);
-                chosenTile.SetOccupant(dronePiece);
+                chosenTile.SetOccupant(dronePiece.GetComponent<DronePiece>());
                 
                 var tilePosition = chosenTile.transform.position;
                 var piecePosition = dronePiece.transform;
@@ -221,7 +221,7 @@ namespace Managers
                 
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
                 var chosenTile = ConversionUtils.GetTileAtCoordinates(tileXPosition, tileYPosition);
-                chosenTile.SetOccupant(dreadnoughtPiece);
+                chosenTile.SetOccupant(dreadnoughtPiece.GetComponent<DreadnoughtPiece>());
                 
                 var tilePosition = chosenTile.transform.position;
                 var piecePosition = dreadnoughtPiece.transform;
@@ -253,7 +253,7 @@ namespace Managers
                 int tileXPosition = GameBoardConstants.BOARD_HEIGHT - Random.Range(1, GameBoardConstants.DRONES_SPAWN_ROWS);
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
                 var chosenTile = ConversionUtils.GetTileAtCoordinates(tileXPosition, tileYPosition);
-                chosenTile.SetOccupant(ControlUnit);
+                chosenTile.SetOccupant(ControlUnit.GetComponent<CommandUnitPiece>());
                 
                 var tilePosition = chosenTile.transform.position;
                 var piecePosition = ControlUnit.transform;
