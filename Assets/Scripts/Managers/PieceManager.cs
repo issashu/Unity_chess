@@ -149,7 +149,7 @@ namespace Managers
                 int tileXPosition = Random.Range(0, GameBoardConstants.HUMANS_SPAWN_ROWS);
                 int tileYPosition = Random.Range(0, GameBoardConstants.BOARD_WIDTH);
                 var chosenTile = ConversionUtils.GetTileAtCoordinates(tileXPosition, tileYPosition);
-                chosenTile.GetComponent<BoardTile>().SetOccupant(jumpshipPiece);
+                chosenTile.SetOccupant(jumpshipPiece);
                 
                 var tilePosition = chosenTile.transform.position;
                 var piecePosition = jumpshipPiece.transform;
@@ -286,8 +286,7 @@ namespace Managers
                     break;
             }
 
-            var boardTileX = ConversionUtils.GetTileAtPoint(deadPiece.CurrentPieceCoordinates);
-            boardTileX.ClearOccupant();
+            ConversionUtils.GetTileAtPoint(deadPiece.CurrentPieceCoordinates).ClearOccupant();
             deadPiece.OnDestroy();
             Destroy(deadPiece.gameObject);
         }

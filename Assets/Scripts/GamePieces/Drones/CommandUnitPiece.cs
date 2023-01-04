@@ -30,7 +30,7 @@ namespace GamePieces.Drones
 
             this.allowedActions = new Dictionary<string, bool>
             {
-                {"move", true}, {"attack", true}
+                {"move", true}, {"attack", false}
             };
             
             this.boxColliderSettings = new Dictionary<string, float>

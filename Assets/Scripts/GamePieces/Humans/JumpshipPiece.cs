@@ -58,9 +58,8 @@ namespace GamePieces.Humans
                 
                 // TODO: Code repetition with basic piece. Extract to a method 
                 var tile = boardMatrix[newPosition.x, newPosition.y];
-                if (!tile.GetComponent<BoardTile>().isTileOccupied())
+                if (!tile.isTileOccupied())
                 {
-                    //Add valid move tile, only if no piece is there.
                     this.validMovesFromPosition.Add(newPosition);
                 }
             }
