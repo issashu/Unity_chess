@@ -58,11 +58,6 @@ namespace GameBoard
             return boardTile.GetComponent<BoardTile>();
         }
 
-        public BoardTile GetTileFromMatrix(int x, int y)
-        {
-            return this._boardMatrix[x, y];
-        }
-        
         public void ClearBoardColors()
         {
             foreach (var tile in _boardMatrix)

@@ -87,10 +87,9 @@ namespace Utils
             if (this._selectedGamePiece && clickedObject.TryGetComponent<BoardTile>(out var endTile))
             {
                 // TODO: Fix this BS. Need to somehow handle who controls the flow and where. Shouldn't be getting the board here >.>
-                var startTile = this._gameBoardScript.GetTileFromMatrix(this._selectedGamePiece.GetComponent<BasePiece>().CurrentPieceCoordinates.x,
-                        this._selectedGamePiece.GetComponent<BasePiece>().CurrentPieceCoordinates.y);
+                var startTile = Utils.ConversionUtils.GetTileAtPoint(this._selectedGamePiece.GetComponent<BasePiece>().CurrentPieceCoordinates);
                 
-                this._selectedGamePiece.GetComponent<BasePiece>().MoveAction(startTile.GetComponent<BoardTile>(), endTile);
+                this._selectedGamePiece.GetComponent<BasePiece>().MoveAction(startTile, endTile);
                 this.DeselectGamePiece();
                 return;
             }

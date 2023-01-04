@@ -23,10 +23,16 @@ namespace Utils
             return tmpPoint;
         }
 
-        public static BoardTile GetTileAtCoordinates(Point coordinates)
+        public static BoardTile GetTileAtPoint(Point coordinates)
         {
             var boardMatrix = GameBoard.GameBoard.Board.GameBoardMatrix;
             return boardMatrix[coordinates.x, coordinates.y];
+        }
+
+        public static BoardTile GetTileAtCoordinates(int x, int y)
+        {
+            var boardMatrix = GameBoard.GameBoard.Board.GameBoardMatrix;
+            return boardMatrix[x, y];
         }
     }
     

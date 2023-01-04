@@ -94,7 +94,7 @@ namespace GamePieces.Drones
         {
             foreach (var location in this.threatenedTilesFromPosition)
             {
-                var tile = ConversionUtils.GetTileAtCoordinates(location);
+                var tile = ConversionUtils.GetTileAtPoint(location);
                 if (!tile.isTileOccupied())
                     continue;
                 

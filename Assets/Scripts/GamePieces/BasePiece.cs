@@ -171,11 +171,7 @@ namespace GamePieces
 
         public virtual void OnDestroy()
         {
-            // TODO Exit gracefully or just deactivate gameObjects in order not to throw exceptions on exit
-            /*var boardTilePieceIsOn = GameObject.Find($"Tile {this.currentTilePosition.x} {this.currentTilePosition.y}");
-            boardTilePieceIsOn.GetComponent<BoardTile>().ClearOccupant();*/
             this.isAlive = false;
-            Debug.Log($"{this.name} has been destroyed");                                                                                                                                
         }
 
         protected virtual void ChangePieceColor(Color newColor)
