@@ -71,7 +71,7 @@ namespace AI
             var targetLocation = ConversionUtils.GetTileAtPoint(ChooseMovePoint());
             var startLocation = ConversionUtils.GetTileAtPoint(this.droneUnitSelected.CurrentPieceCoordinates);
             
-            this.droneUnitSelected.MoveAction(startLocation, targetLocation);
+            this.droneUnitSelected.PreciseMoveAction(startLocation, targetLocation);
         }
     }
 }

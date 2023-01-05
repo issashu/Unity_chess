@@ -135,7 +135,7 @@ namespace GamePieces
          * <summary>Method to move the game piece to another location on the board. Returns true on success and false
          * on failure</summary>
          */
-        public virtual void MoveAction(BoardTile startLocation, BoardTile targetLocation)
+        public virtual void PreciseMoveAction(BoardTile startLocation, BoardTile targetLocation)
         {
             if(!startLocation || !targetLocation)
                 return;
@@ -152,6 +152,26 @@ namespace GamePieces
             this.transform.position = targetLocation.transform.position;
             targetLocation.SetOccupant(this);
             startLocation.ClearOccupant();
+            
+            this.allowedActions["move"] = false;
+            this.validMovesFromPosition.Clear();
+            this.threatenedTilesFromPosition.Clear();
+        }
+
+        public virtual void GenericDirectionalMoveAction(Point moveLocationPoint)
+        {
+            var directionOfMove = MiscUtils.DirectionBetweenPoints(this.CurrentPieceCoordinates, moveLocationPoint);
+            var unitStepDirection = MiscUtils.NormalizeDirection(directionOfMove);
+            
+            int targetPointX = this.CurrentPieceCoordinates.x + (unitStepDirection.x * this.maxMoveDistance);
+            int targetPointY = this.CurrentPieceCoordinates.y + (unitStepDirection.y * this.maxMoveDistance);
+
+            var startTile = ConversionUtils.GetTileAtPoint(this.CurrentPieceCoordinates);
+            var targetTile = ConversionUtils.GetTileAtCoordinates(targetPointX, targetPointY);
+            
+            this.transform.position = targetTile.transform.position;
+            targetTile.SetOccupant(this);
+            startTile.ClearOccupant();
             
             this.allowedActions["move"] = false;
             this.validMovesFromPosition.Clear();

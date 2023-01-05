@@ -40,22 +40,31 @@ namespace AI
         {
             /*Kept it simple here, calculating distance between two points in 2D space, BUT if we add obstacles BFS/DFS
              or similar path search algorithm would be more suited. Prefer to use queue/stack on heap for those then recursion. 
-             Also allowed myself to add additional logic to the movement: This is the AI killer machine. If within 
-             range, it can hit two or more units, it will move there and do it */
-
-            Point moveLocationPoint;
+             Also allowed myself to add additional logic to the movement: 
+             This is the AI killer machine! If within move range, it can hit two or more units, it will move there and
+             do it */
+            
             if (!this.droneUnitSelected.AllowedActions["move"] || this.droneUnitSelected.AllowedMovesList.Count == 0)
                 return;
+            
             // TODO Make the second part of if reachable. Game difficulty to be modifiable, not constant
-            moveLocationPoint = GameSettings.GAME_DIFFICULTY < 3 ? this.FindClosestEnemyPoint() : this.FindPointWithMultipleTargets();
-            
-            var moveLocationTile = ConversionUtils.GetTileAtPoint(moveLocationPoint);
-            var currentLocationTile = ConversionUtils.GetTileAtPoint(this.droneUnitSelected.CurrentPieceCoordinates);
-            
-            this.droneUnitSelected.MoveAction(currentLocationTile, moveLocationTile);
+            var moveLocationPoint = GameSettings.GAME_DIFFICULTY < 3 ? this.FindClosestEnemyPoint() : this.FindPointWithMultipleTargets();
 
+            if (MiscUtils.DistanceBetweenTwoPoints(this.droneUnitSelected.CurrentPieceCoordinates, moveLocationPoint) >
+                this.droneUnitSelected.MaxMoveDistance)
+            {
+                this.droneUnitSelected.GenericDirectionalMoveAction(moveLocationPoint);
+            }
+            else
+            {
+                // TODO Add sanity checks either here or in the returns
+                var moveLocationTile = ConversionUtils.GetTileAtPoint(moveLocationPoint);
+                var currentLocationTile = ConversionUtils.GetTileAtPoint(this.droneUnitSelected.CurrentPieceCoordinates);
+            
+                this.droneUnitSelected.PreciseMoveAction(currentLocationTile, moveLocationTile);
+            }
         }
-
+        
         private Point FindPointWithMultipleTargets()
         {
             // Store original position coordinates in a temp
@@ -83,16 +92,15 @@ namespace AI
 
         private Point FindClosestEnemyPoint()
         {
-            // TODO Make rootXY some general variable
+            /* Used for initialisation */
             var rootXY = new Utils.Point(0, 0);
-            var closestTargetPoint = rootXY - this.droneUnitSelected.CurrentPieceCoordinates;
-            var shortestDistanceInSquares = Math.Abs(closestTargetPoint.x) + Math.Abs(closestTargetPoint.y);
-            
+            var shortestDistanceInSquares = MiscUtils.DistanceBetweenTwoPoints(this.droneUnitSelected.CurrentPieceCoordinates, rootXY);
+            var closestTargetPoint = rootXY;
+                
             foreach (var unit in humanUnits)
             {
                 var unitLocation = unit.GetComponent<BasePiece>().CurrentPieceCoordinates;
-                var pointDifferenceToUnit = unitLocation - this.droneUnitSelected.CurrentPieceCoordinates;
-                var distanceToUnitInSquares = Math.Abs(pointDifferenceToUnit.x) + Math.Abs(pointDifferenceToUnit.y);
+                var distanceToUnitInSquares = MiscUtils.DistanceBetweenTwoPoints(this.droneUnitSelected.CurrentPieceCoordinates, unitLocation);
 
                 if (distanceToUnitInSquares < shortestDistanceInSquares)
                 {
@@ -103,7 +111,6 @@ namespace AI
 
             return closestTargetPoint;
         }
-
 
         private void AttackWithDreadUnit()
         {

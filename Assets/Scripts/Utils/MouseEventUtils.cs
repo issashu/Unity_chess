@@ -137,7 +137,7 @@ namespace Utils
             
             var startTile = Utils.ConversionUtils.GetTileAtPoint(this._selectedGamePieceScript.CurrentPieceCoordinates);
                 
-            this._selectedGamePieceScript.MoveAction(startTile, destinationTile);
+            this._selectedGamePieceScript.PreciseMoveAction(startTile, destinationTile);
         }
 
         private void ExecuteAttackAction(BasePiece attackTarget)

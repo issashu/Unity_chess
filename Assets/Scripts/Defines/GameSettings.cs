@@ -14,7 +14,7 @@ namespace Defines
         public const int CONTROL_UNITS_AMMOUNT = 1;
         
         /*--------MISC GAME SETTINGS-----------*/
-        public const float DEFAULT_AI_WAIT_TIMER = 1f;
+        public const float DEFAULT_AI_WAIT_TIMER = 3f;
         public const int GAME_DIFFICULTY = 1;
     }
 }

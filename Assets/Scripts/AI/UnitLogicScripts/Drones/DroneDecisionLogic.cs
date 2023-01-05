@@ -44,7 +44,7 @@ namespace AI
             var moveLocationTile = ConversionUtils.GetTileAtPoint(moveLocationPoint);
             var currentLocationTile = ConversionUtils.GetTileAtPoint(this.selectedUnit.CurrentPieceCoordinates);
             
-            this.selectedUnit.MoveAction(currentLocationTile, moveLocationTile);
+            this.selectedUnit.PreciseMoveAction(currentLocationTile, moveLocationTile);
 
         }
 

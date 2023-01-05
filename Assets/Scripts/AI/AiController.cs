@@ -52,6 +52,7 @@ namespace AI
                 return;
             
             this.ExecuteAiControlLogic();
+            MiscUtils.shouldBeWaiting(GameSettings.DEFAULT_AI_WAIT_TIMER);
             this.EndAiTurn();
         }
 
@@ -83,7 +84,7 @@ namespace AI
         public void HighlightUnitSelectedByAi(BasePiece selectedUnit)
         {
             selectedUnit.ChangePieceColor(Color.cyan);
-            MiscUtils.shouldBeWaiting(GameSettings.DEFAULT_AI_WAIT_TIMER);
+            
         }
         
         private void EndAiTurn()
