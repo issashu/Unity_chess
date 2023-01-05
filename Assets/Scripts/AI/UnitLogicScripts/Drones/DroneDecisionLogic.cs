@@ -15,7 +15,7 @@ namespace AI
         */
     public class DroneDecisionLogic : AIDecisionLogic
     {
-        protected BasePiece selectedUnit;
+        private BasePiece selectedUnit;
 
         public override void ExecuteUnitBehaviour(BasePiece droneUnit)
         {
@@ -29,13 +29,10 @@ namespace AI
             
             AiController.SelectUnit(this.selectedUnit);
             this.MoveDroneUnit();
-            
-            MiscUtils.shouldBeWaiting(GameSettings.DEFAULT_AI_WAIT_TIMER);
-            
             this.AttackWithDroneUnit();
         }
-        
-        protected void MoveDroneUnit()
+
+        private void MoveDroneUnit()
         {
             if (!this.selectedUnit.AllowedActions["move"] || this.selectedUnit.AllowedMovesList.Count == 0)
                 return;
@@ -48,7 +45,7 @@ namespace AI
 
         }
 
-        protected BasePiece ChooseAttackTarget()
+        private BasePiece ChooseAttackTarget()
         { 
             /*Low damage unit, so we choose where impact will be greatest - min Health or max Importance*/
             var firstTargetPoint = ConversionUtils.GetTileAtPoint(this.selectedUnit.ThreatenedTiles[0]);
@@ -75,7 +72,7 @@ namespace AI
             return targetPiece;
         }
 
-        protected void AttackWithDroneUnit()
+        private void AttackWithDroneUnit()
         {
             if (!this.selectedUnit.AllowedActions["attack"] || this.selectedUnit.ThreatenedTiles.Count == 0)
                 return;

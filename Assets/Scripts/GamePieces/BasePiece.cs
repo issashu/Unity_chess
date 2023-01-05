@@ -1,14 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using AI;
-using Defines;
 using Enums;
 using GameBoard;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using Utils;
 
 namespace GamePieces
@@ -131,6 +126,31 @@ namespace GamePieces
             }
         }
         
+        /*-----------MOVEMENT LOGIC----------*/
+        protected virtual void ListPossibleMovesFromPosition()
+        {
+            int directions = this.movesXAxis.Length;
+            var gameBoard = GameBoard.GameBoard.Board;
+            var boardMatrix = gameBoard.GameBoardMatrix;
+
+            for (int direction = 0; direction < directions; direction++)
+            {
+                for (int distance = 1; distance <= this.MaxMoveDistance; distance++)
+                {
+                    var newPosition = new Point(this.currentTilePosition.x + (distance * this.movesXAxis[direction]),
+                        this.currentTilePosition.y + (distance * this.movesYAxis[direction]));
+                    if (!gameBoard.isPointWithinBoardLimits(newPosition))
+                        continue;
+
+                    var tile = boardMatrix[newPosition.x, newPosition.y];
+                    if (tile.isTileOccupied())
+                        break;
+
+                    //Add valid move tile, only if no piece is there.
+                    this.validMovesFromPosition.Add(newPosition);
+                }
+            }
+        }
         /**
          * <summary>Method to move the game piece to another location on the board. Returns true on success and false
          * on failure</summary>
@@ -145,19 +165,12 @@ namespace GamePieces
             if (!this.validMovesFromPosition.Contains(moveLocationPoint))
                 return;
             
-            // TODO Check if we really need Vector or can go with Point
-            var moveLocationVector = ConversionUtils.WorldPositionFromCoordinates(targetLocation.XCoordinate, targetLocation.YCoordinate);
-            this.SetCurrentPosition(Mathf.RoundToInt(moveLocationVector.x), Mathf.RoundToInt(moveLocationVector.y));
+            /*var moveLocationVector = ConversionUtils.WorldPositionFromCoordinates(targetLocation.XCoordinate, targetLocation.YCoordinate);
+            this.SetCurrentPosition(Mathf.RoundToInt(moveLocationVector.x), Mathf.RoundToInt(moveLocationVector.y));*/
             
-            this.transform.position = targetLocation.transform.position;
-            targetLocation.SetOccupant(this);
-            startLocation.ClearOccupant();
-            
-            this.allowedActions["move"] = false;
-            this.validMovesFromPosition.Clear();
-            this.threatenedTilesFromPosition.Clear();
+            this.MovePiece(startLocation, targetLocation);
         }
-
+        
         public virtual void GenericDirectionalMoveAction(Point moveLocationPoint)
         {
             var directionOfMove = MiscUtils.DirectionBetweenPoints(this.CurrentPieceCoordinates, moveLocationPoint);
@@ -169,7 +182,16 @@ namespace GamePieces
             var startTile = ConversionUtils.GetTileAtPoint(this.CurrentPieceCoordinates);
             var targetTile = ConversionUtils.GetTileAtCoordinates(targetPointX, targetPointY);
             
+            this.MovePiece(startTile, targetTile);
+        }
+
+        private void MovePiece(BoardTile startTile, BoardTile targetTile)
+        {
             this.transform.position = targetTile.transform.position;
+            
+            var moveLocationVector = ConversionUtils.WorldPositionFromCoordinates(targetTile.XCoordinate, targetTile.YCoordinate);
+            this.SetCurrentPosition(Mathf.RoundToInt(moveLocationVector.x), Mathf.RoundToInt(moveLocationVector.y));
+            
             targetTile.SetOccupant(this);
             startTile.ClearOccupant();
             
@@ -178,59 +200,7 @@ namespace GamePieces
             this.threatenedTilesFromPosition.Clear();
         }
         
-        public virtual void AttackAction(BasePiece target)
-        {
-            if (!this.threatenedTilesFromPosition.Contains(target.currentTilePosition))
-                return;
-
-            target.TakeDamage(this.attackPower);
-            this.allowedActions["attack"] = false;
-            this.threatenedTilesFromPosition.Clear();
-        }
-
-        public virtual void TakeDamage(int damage)
-        {
-            this.hitPoints -= damage;
-            this.ValidateHealth();
-        }
-
-        protected virtual void ValidateHealth()
-        {
-            if (this.hitPoints < 0)
-            {
-                this.hitPoints = 0;
-            }
-        }
-
-        public virtual void OnDestroy()
-        {
-            this.isAlive = false;
-        }
-
-        public virtual void ChangePieceColor(Color newColor)
-        {
-            this.PieceSpriteRenderer.material.color = newColor;
-        }
-
-        public virtual void DeactivatePiece()
-        {
-            // TODO Move to Piece Manager
-            this.isActive = false;
-            ChangePieceColor(Color.grey);
-        }
-        
-        public virtual void ActivatePiece()
-        {
-            this.isActive = true;
-            ChangePieceColor(Color.white);
-        }
-
-        public virtual void ResetPieceActions()
-        {
-            this.allowedActions["move"] = true;
-            this.allowedActions["attack"] = true;
-        }
-
+        /*-----------ATTACK LOGIC----------*/
         protected virtual void ListThreatenedTiles()
         {
             // TODO: Extract actions to a separate class to avoid the repetition in move and attack.
@@ -263,33 +233,63 @@ namespace GamePieces
                 }
             }
         }
-
-        protected virtual void ListPossibleMovesFromPosition()
+        public virtual void AttackAction(BasePiece target)
         {
-            int directions = this.movesXAxis.Length;
-            var gameBoard = GameBoard.GameBoard.Board;
-            var boardMatrix = gameBoard.GameBoardMatrix;
+            if (!this.threatenedTilesFromPosition.Contains(target.currentTilePosition))
+                return;
 
-            for (int direction = 0; direction < directions; direction++)
+            target.TakeDamage(this.attackPower);
+            this.allowedActions["attack"] = false;
+            this.threatenedTilesFromPosition.Clear();
+        }
+
+        public virtual void TakeDamage(int damage)
+        {
+            this.hitPoints -= damage;
+            this.ValidateHealth();
+        }
+
+        protected virtual void ValidateHealth()
+        {
+            if (this.hitPoints < 0)
             {
-                for (int distance = 1; distance <= this.MaxMoveDistance; distance++)
-                {
-                    var newPosition = new Point(this.currentTilePosition.x + (distance * this.movesXAxis[direction]),
-                        this.currentTilePosition.y + (distance * this.movesYAxis[direction]));
-                    if (!gameBoard.isPointWithinBoardLimits(newPosition))
-                        continue;
-
-                    var tile = boardMatrix[newPosition.x, newPosition.y];
-                    if (tile.isTileOccupied())
-                        break;
-
-                    //Add valid move tile, only if no piece is there.
-                    this.validMovesFromPosition.Add(newPosition);
-                }
+                this.hitPoints = 0;
             }
         }
+
+        public virtual void OnDestroy()
+        {
+            this.isAlive = false;
+        }
         
-        /*-----------PUBLIC-------------*/
+        
+        /*------MISC UTILITY METHODS------*/
+        public virtual void ChangePieceColor(Color newColor)
+        {
+            this.PieceSpriteRenderer.material.color = newColor;
+        }
+
+        public virtual void DeactivatePiece()
+        {
+            // TODO Move to Piece Manager
+            this.isActive = false;
+            ChangePieceColor(Color.grey);
+        }
+        
+        public virtual void ActivatePiece()
+        {
+            this.isActive = true;
+            ChangePieceColor(Color.white);
+        }
+
+        public virtual void ResetPieceActions()
+        {
+            this.allowedActions["move"] = true;
+            this.allowedActions["attack"] = true;
+        }
+        
+        
+        /*-----------PROPERTIES / GETTERS & SETTERS-------------*/
         public bool IsPieceActive
         {
             get => this.isActive;
@@ -305,7 +305,6 @@ namespace GamePieces
         public Point CurrentPieceCoordinates => this.currentTilePosition;
         public SpriteRenderer PieceSpriteRenderer => this.GetComponent<SpriteRenderer>();
         public Sprite UnitSprite => gameSprite;
-
         public AIDecisionLogic UnitAiBehaviourLogic
         {
             get => this.unitAiBehaviourLogic;

@@ -31,10 +31,7 @@ namespace AI
                 return;
             
             this.droneUnitSelected.ListAllMoveTiles();
-            
             this.MoveControlUnit();
-            
-            MiscUtils.shouldBeWaiting(GameSettings.DEFAULT_AI_WAIT_TIMER);
         }
         
         protected Point ChooseMovePoint()
