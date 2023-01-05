@@ -60,8 +60,7 @@ namespace Managers
             DronePiece.OnReachingRowZero += DroneVictoryAchieved;
         }
         
-        // TODO MAke argst Event.Empty, if nothing will be passed
-      private static void DroneVictoryAchieved(object eventSender, EventArgs args)
+        private static void DroneVictoryAchieved(object eventSender, EventArgs args)
         {
             // TODO Add some endgame pop-up logic here and stop app
             Debug.Log("Drone team won!");
@@ -71,6 +70,11 @@ namespace Managers
         {
             // TODO Add some endgame pop-up logic here and stop app
             Debug.Log("Humans team won!");
+        }
+
+        public void QuitApplication()
+        {
+            Application.Quit();
         }
     }
 }
