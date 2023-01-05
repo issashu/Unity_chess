@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using AI;
 using Enums;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -14,11 +16,12 @@ namespace GamePieces.Drones
             this.attackPower = 0;
             this.hitPoints = 5;
             this.gameTeam = (int) FactionEnum.Drones;
-            this.piecePointsValue = (int) DroneUnits.CommandUnit;
+            this.pieceTypeAndPointsValue = (int) DroneUnits.CommandUnit;
             this.isAlive = true;
             this.isActive = true;
             this.currentTilePosition = new Point(0, 0);
             this.gameSprite = Resources.Load<Sprite>("Sprites/Drones/CommandUnit");
+            this.unitAiBehaviourLogic = this.GetComponent<CommandUnitDecisionLogic>();
             this.currentTilePosition = new Point(0, 0);
             this.validMovesFromPosition = new List<Point>();
             this.threatenedTilesFromPosition = new List<Point>();

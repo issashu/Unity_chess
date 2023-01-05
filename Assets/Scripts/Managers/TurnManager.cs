@@ -19,7 +19,6 @@ namespace Managers
             // Mostly sanity check, for clones
             if (_instance != null && _instance != this)
             {
-                // TODO Make the script spawn the other Managers and attach them to himself or make gatekeeper Singleton managers object group
                 Destroy(this.gameObject);
                 return;
             }

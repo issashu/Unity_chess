@@ -20,7 +20,14 @@ namespace GameBoard
 
         private void Awake()
         {
+            // Mostly sanity check, for clones
+            if (_instance != null && _instance != this)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
             _instance = this;
+            
             this._boardHeight = Defines.GameBoardConstants.BOARD_HEIGHT;
             this._boardWidth = Defines.GameBoardConstants.BOARD_WIDTH;
             this._boardMatrix = new BoardTile[this._boardHeight, this._boardWidth];

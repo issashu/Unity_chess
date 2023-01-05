@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using AI;
 using Defines;
 using Enums;
 using GameBoard;
@@ -12,16 +13,19 @@ using Utils;
 
 namespace GamePieces
 {
-    public class BasePiece : MonoBehaviour  {
-        [SerializeField] protected int maxMoveDistance;
-        [SerializeField] protected int maxAttackDistance;
-        [SerializeField] protected int attackPower;
-        [SerializeField] protected int hitPoints;
-        [SerializeField] protected int gameTeam;
-        [SerializeField] protected int piecePointsValue;
-        [SerializeField] protected bool isAlive;
-        [SerializeField] protected bool isActive;
-        [SerializeField] protected Sprite gameSprite;
+    public class BasePiece : MonoBehaviour  
+    {
+        
+        protected int maxMoveDistance;
+        protected int maxAttackDistance;
+        protected int attackPower;
+        protected int hitPoints;
+        protected int gameTeam;
+        protected int pieceTypeAndPointsValue;
+        protected bool isAlive;
+        protected bool isActive;
+        protected Sprite gameSprite;
+        protected AIDecisionLogic unitAiBehaviourLogic;
         protected List<Point> validMovesFromPosition;
         protected List<Point> threatenedTilesFromPosition;
         protected Point currentTilePosition;
@@ -41,7 +45,7 @@ namespace GamePieces
             this.attackPower = 0;
             this.hitPoints = 0;
             this.gameTeam = (int) FactionEnum.None;
-            this.piecePointsValue = (int) HumanUnits.None;
+            this.pieceTypeAndPointsValue = (int) HumanUnits.None;
             this.isAlive = false;
             this.isActive = false;
             this.currentTilePosition = new Point(0, 0);
@@ -277,10 +281,16 @@ namespace GamePieces
         public int DamageDone => attackPower;
         public bool IsPieceAlive => isAlive;
         public int PieceFaction => gameTeam;
-        public int PiecePointsValue => piecePointsValue;
+        public int PieceTypeAndPointsValue => pieceTypeAndPointsValue;
         public Point CurrentPieceCoordinates => this.currentTilePosition;
         public SpriteRenderer PieceSpriteRenderer => this.GetComponent<SpriteRenderer>();
         public Sprite UnitSprite => gameSprite;
+
+        public AIDecisionLogic UnitAiBehaviourLogic
+        {
+            get => this.unitAiBehaviourLogic;
+            set => this.unitAiBehaviourLogic = value;
+        }
         public Dictionary<string, bool> AllowedActions => allowedActions;
         public Dictionary<string, float> BoxColliderSettings => boxColliderSettings;
         public List<Point> AllowedMovesList => this.validMovesFromPosition;

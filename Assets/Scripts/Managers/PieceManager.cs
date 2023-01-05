@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using AI;
 using Defines;
 using Enums;
 using GameBoard;
@@ -36,7 +37,6 @@ namespace Managers
                 return;
             }
             _instance = this;
-            
             
             this._spawnedHumanPieces = new List<GameObject>();
             this._spawnedAIPieces = new List<GameObject>();
@@ -179,6 +179,8 @@ namespace Managers
             {
                 var dronePiece = new GameObject("Drone" + (i + 1));
                 dronePiece.AddComponent<DronePiece>();
+                dronePiece.AddComponent<DroneDecisionLogic>();
+                dronePiece.GetComponent<DronePiece>().UnitAiBehaviourLogic = dronePiece.GetComponent<DroneDecisionLogic>();
                 dronePiece.AddComponent<SpriteRenderer>();
                 dronePiece.GetComponent<SpriteRenderer>().sprite = dronePiece.GetComponent<DronePiece>().UnitSprite;
                 dronePiece.GetComponent<SpriteRenderer>().flipX = true;
@@ -213,6 +215,8 @@ namespace Managers
             {
                 var dreadnoughtPiece = new GameObject("Dreadnought" + (i+1));
                 dreadnoughtPiece.AddComponent<DreadnoughtPiece>();
+                dreadnoughtPiece.AddComponent<DreadnoughtDecisionLogic>();
+                dreadnoughtPiece.GetComponent<DreadnoughtPiece>().UnitAiBehaviourLogic = dreadnoughtPiece.GetComponent<DreadnoughtDecisionLogic>();
                 dreadnoughtPiece.AddComponent<SpriteRenderer>();
                 dreadnoughtPiece.GetComponent<SpriteRenderer>().sprite =
                     dreadnoughtPiece.GetComponent<DreadnoughtPiece>().UnitSprite;
@@ -249,6 +253,8 @@ namespace Managers
             {
                 var ControlUnit = new GameObject("Command Unit" + (i+1));
                 ControlUnit.AddComponent<CommandUnitPiece>();
+                ControlUnit.AddComponent<CommandUnitDecisionLogic>();
+                ControlUnit.GetComponent<CommandUnitPiece>().UnitAiBehaviourLogic = ControlUnit.GetComponent<CommandUnitDecisionLogic>();
                 ControlUnit.AddComponent<SpriteRenderer>();
                 ControlUnit.GetComponent<SpriteRenderer>().sprite = ControlUnit.GetComponent<CommandUnitPiece>().UnitSprite;
                 ControlUnit.GetComponent<SpriteRenderer>().flipX = true;

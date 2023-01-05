@@ -15,7 +15,7 @@ namespace GamePieces.Humans
             this.attackPower = 1;
             this.hitPoints = 2;
             this.gameTeam = (int) FactionEnum.Humans;
-            this.piecePointsValue = (int) HumanUnits.Grunt;
+            this.pieceTypeAndPointsValue = (int) HumanUnits.Grunt;
             this.isAlive = true;
             this.isActive = true;
             this.currentTilePosition = new Point(0, 0);

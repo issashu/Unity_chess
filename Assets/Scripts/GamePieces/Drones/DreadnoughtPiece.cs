@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AI;
 using Enums;
 using Managers;
 using UnityEditor;
@@ -16,11 +17,12 @@ namespace GamePieces.Drones
             this.attackPower = 2;
             this.hitPoints = 5;
             this.gameTeam = (int) FactionEnum.Drones;
-            this.piecePointsValue = (int) DroneUnits.Dreadnought;
+            this.pieceTypeAndPointsValue = (int) DroneUnits.Dreadnought;
             this.isAlive = true;
             this.isActive = true;
             this.currentTilePosition = new Point(0, 0);
             this.gameSprite = Resources.Load<Sprite>("Sprites/Drones/Dreadnought");
+            this.unitAiBehaviourLogic = this.GetComponent<DreadnoughtDecisionLogic>();
             this.currentTilePosition = new Point(0, 0);
             this.validMovesFromPosition = new List<Point>();
             this.threatenedTilesFromPosition = new List<Point>();
