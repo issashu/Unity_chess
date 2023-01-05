@@ -5,7 +5,9 @@ using Defines;
 using Enums;
 using GameBoard;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 using Utils;
 
 namespace GamePieces
@@ -16,6 +18,7 @@ namespace GamePieces
         [SerializeField] protected int attackPower;
         [SerializeField] protected int hitPoints;
         [SerializeField] protected int gameTeam;
+        [SerializeField] protected int piecePointsValue;
         [SerializeField] protected bool isAlive;
         [SerializeField] protected bool isActive;
         [SerializeField] protected Sprite gameSprite;
@@ -38,6 +41,7 @@ namespace GamePieces
             this.attackPower = 0;
             this.hitPoints = 0;
             this.gameTeam = (int) FactionEnum.None;
+            this.piecePointsValue = (int) HumanUnits.None;
             this.isAlive = false;
             this.isActive = false;
             this.currentTilePosition = new Point(0, 0);
@@ -127,16 +131,17 @@ namespace GamePieces
          * <summary>Method to move the game piece to another location on the board. Returns true on success and false
          * on failure</summary>
          */
-        protected virtual void MovePiece(BoardTile startLocation, BoardTile targetLocation)
+        public virtual void MoveAction(BoardTile startLocation, BoardTile targetLocation)
         {
             if(!startLocation || !targetLocation)
                 return;
             
             var moveLocationPoint = ConversionUtils.CreatePointObjectFromTile(targetLocation);
+            
             if (!this.validMovesFromPosition.Contains(moveLocationPoint))
                 return;
             
-            // TODO: Do check if we really need the SetCurrentPosition
+            // TODO Check if we really need Vector or can go with Point
             var moveLocationVector = ConversionUtils.WorldPositionFromCoordinates(targetLocation.XCoordinate, targetLocation.YCoordinate);
             this.SetCurrentPosition(Mathf.RoundToInt(moveLocationVector.x), Mathf.RoundToInt(moveLocationVector.y));
             
@@ -149,12 +154,12 @@ namespace GamePieces
             this.threatenedTilesFromPosition.Clear();
         }
         
-        public virtual void AttackAction(BasePiece target, int damageDone)
+        public virtual void AttackAction(BasePiece target)
         {
             if (!this.threatenedTilesFromPosition.Contains(target.currentTilePosition))
                 return;
 
-            target.TakeDamage(damageDone);
+            target.TakeDamage(this.attackPower);
             this.allowedActions["attack"] = false;
             this.threatenedTilesFromPosition.Clear();
         }
@@ -215,7 +220,7 @@ namespace GamePieces
                 {
                     var attackTile = new Point(this.currentTilePosition.x + (distance * this.attacksXAxis[direction]),
                         this.currentTilePosition.y + (distance * this.attacksYAxis[direction]));
-                    // TODO Redo the ifs...too ugly with so many just sending a continue :/
+                    
                     if (!gameBoard.isPointWithinBoardLimits(attackTile))
                         continue;
 
@@ -272,12 +277,17 @@ namespace GamePieces
         public int DamageDone => attackPower;
         public bool IsPieceAlive => isAlive;
         public int PieceFaction => gameTeam;
+        public int PiecePointsValue => piecePointsValue;
         public Point CurrentPieceCoordinates => this.currentTilePosition;
         public SpriteRenderer PieceSpriteRenderer => this.GetComponent<SpriteRenderer>();
         public Sprite UnitSprite => gameSprite;
         public Dictionary<string, bool> AllowedActions => allowedActions;
         public Dictionary<string, float> BoxColliderSettings => boxColliderSettings;
-        public void MoveAction(BoardTile startLocation, BoardTile targetLocation) => MovePiece(startLocation, targetLocation);
+        public List<Point> AllowedMovesList => this.validMovesFromPosition;
+        public List<Point> ThreatenedTiles => this.threatenedTilesFromPosition;
+
+        public void ListAllThreatenedTiles() => ListThreatenedTiles();
+        public void ListAllMoveTiles() => ListPossibleMovesFromPosition();
     }
 }
 

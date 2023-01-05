@@ -14,6 +14,7 @@ namespace GamePieces.Drones
             this.attackPower = 0;
             this.hitPoints = 5;
             this.gameTeam = (int) FactionEnum.Drones;
+            this.piecePointsValue = (int) DroneUnits.CommandUnit;
             this.isAlive = true;
             this.isActive = true;
             this.currentTilePosition = new Point(0, 0);

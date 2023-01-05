@@ -14,5 +14,7 @@ namespace Defines
         public const int CONTROL_UNITS_AMMOUNT = 1;
         
         /*--------MISC GAME SETTINGS-----------*/
+
+        public const int GAME_DIFFICULTY = 1;
     }
 }

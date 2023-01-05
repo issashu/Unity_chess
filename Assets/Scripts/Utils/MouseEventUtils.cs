@@ -11,6 +11,10 @@ namespace Utils
 {
     public class MouseEventUtils : MonoBehaviour
     {
+        private static MouseEventUtils _instance;
+        public static MouseEventUtils Instance => _instance;
+        
+        
         private const int _leftMouseButton = 0;
         private RaycastHit2D _target;
         private GameObject _selectedGamePiece;
@@ -19,6 +23,15 @@ namespace Utils
 
         private void Start()
         {
+            // Mostly sanity check, for clones
+            if (_instance != null && _instance != this)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+            _instance = this;
+            
+            
             this._gameBoardScript = GameBoard.GameBoard.Board;
             this._selectedGamePiece = null;
             this._selectedGamePieceScript = null;
@@ -134,9 +147,8 @@ namespace Utils
             
             if (PieceManager.arePiecesSameTeam(attackTarget, this._selectedGamePieceScript))
                 return;
-                
-            var damageDone = this._selectedGamePieceScript.DamageDone;
-            this._selectedGamePieceScript.AttackAction(attackTarget, damageDone);
+            
+            this._selectedGamePieceScript.AttackAction(attackTarget);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using AI;
 using Defines;
 using GameBoard;
 using GamePieces.Drones;
@@ -21,13 +22,13 @@ namespace Managers
         private GameObject _gameBoard;
         private GameObject _gamePieces;
         private GameObject _turnSystem;
+        private GameObject _aiPlayer;
 
         private void Awake()
         {
             // Mostly sanity check, for clones
             if (_instance != null && _instance != this)
             {
-                // TODO Make the script spawn the other Managers and attach them to himself or make gatekeeper Singleton managers object group
                 Destroy(this.gameObject);
                 return;
             }
@@ -43,6 +44,10 @@ namespace Managers
 
             this._turnSystem = new GameObject("TurnSystem");
             this._turnSystem.AddComponent<TurnManager>();
+
+            this._aiPlayer = new GameObject("AI Controller");
+            this._aiPlayer.AddComponent<AIActions>();
+            this._aiPlayer.AddComponent<AIDecisionLogic>();
 
         }
 

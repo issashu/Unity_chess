@@ -16,6 +16,7 @@ namespace GamePieces.Drones
             this.attackPower = 1;
             this.hitPoints = 2;
             this.gameTeam = (int) FactionEnum.Drones;
+            this.piecePointsValue = (int) DroneUnits.Drone;
             this.isAlive = true;
             this.isActive = true;
             this.gameSprite = Resources.Load<Sprite>("Sprites/Drones/Drone");

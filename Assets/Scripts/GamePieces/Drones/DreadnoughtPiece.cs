@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Enums;
 using Managers;
+using UnityEditor;
 using UnityEngine;
 using Utils;
 
@@ -15,6 +16,7 @@ namespace GamePieces.Drones
             this.attackPower = 2;
             this.hitPoints = 5;
             this.gameTeam = (int) FactionEnum.Drones;
+            this.piecePointsValue = (int) DroneUnits.Dreadnought;
             this.isAlive = true;
             this.isActive = true;
             this.currentTilePosition = new Point(0, 0);
@@ -22,7 +24,8 @@ namespace GamePieces.Drones
             this.currentTilePosition = new Point(0, 0);
             this.validMovesFromPosition = new List<Point>();
             this.threatenedTilesFromPosition = new List<Point>();
-
+            
+            // TODO Convert to arrays of Points called with the direction names :)
             this.movesXAxis = new [] { 0, 1, 1, 1, 0, -1,-1,-1};
             this.movesYAxis = new [] { 1, 1, 0,-1,-1, -1, 0, 1};
             
@@ -70,7 +73,6 @@ namespace GamePieces.Drones
             if (!this.isActive)
                 return;
             
-            // TODO: Extract to Piece Manager and unify the two highlights. Code is almost the same except color...
             var boardMatrix = GameBoard.GameBoard.Board.GameBoardMatrix;
 
             ListThreatenedTiles();
@@ -88,7 +90,7 @@ namespace GamePieces.Drones
             }
         }
         
-        public override void AttackAction(BasePiece target, int damageDone)
+        public override void AttackAction(BasePiece target)
         {
             foreach (var location in this.threatenedTilesFromPosition)
             {
@@ -97,7 +99,7 @@ namespace GamePieces.Drones
                     continue;
                 
                 if (!PieceManager.arePiecesSameTeam(this, tile.TileOccupant))
-                    tile.TileOccupant.TakeDamage(damageDone);
+                    tile.TileOccupant.TakeDamage(this.attackPower);
             }
             
             this.allowedActions["attack"] = false;

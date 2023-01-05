@@ -15,18 +15,29 @@ namespace Managers
 {
     public class PieceManager: MonoBehaviour
     {
+        private static PieceManager _instance;
+        public static PieceManager Instance => _instance;
         // TODO Those events might need to be called by Game Manager
         public static event EventHandler OnHumansWipe;
         public static event EventHandler OnDronesWipe;
         public static event EventHandler OnAICommandUnitsWipe;
         
         // TODO: Remove the serialize field. It is just for debugging the list
-         [SerializeField] private List<GameObject> _spawnedHumanPieces;
-         [SerializeField] private List<GameObject> _spawnedAIPieces;
-         [SerializeField] private List<GameObject> _spawnedAICommandUnits;
+         private List<GameObject> _spawnedHumanPieces;
+         private List<GameObject> _spawnedAIPieces;
+         private List<GameObject> _spawnedAICommandUnits;
 
          private void Awake()
         { 
+            // Mostly sanity check, for clones
+            if (_instance != null && _instance != this)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+            _instance = this;
+            
+            
             this._spawnedHumanPieces = new List<GameObject>();
             this._spawnedAIPieces = new List<GameObject>();
             this._spawnedAICommandUnits = new List<GameObject>();
@@ -349,5 +360,6 @@ namespace Managers
 
         public List<GameObject> AiPieces => this._spawnedAIPieces;
         public List<GameObject> HumanPieces => this._spawnedHumanPieces;
+        public List<GameObject> DroneCommandUnits => this._spawnedAICommandUnits;
     }
 }
