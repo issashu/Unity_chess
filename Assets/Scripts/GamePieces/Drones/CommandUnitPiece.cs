@@ -42,6 +42,8 @@ namespace GamePieces.Drones
                 {"offsetX", 0.13f}, {"offsetY", 1.15f},
                 {"sizeX", 1.16f},   {"sizeY", 2.34f}
             };
+            
+            this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
         
         public override void ResetPieceActions()

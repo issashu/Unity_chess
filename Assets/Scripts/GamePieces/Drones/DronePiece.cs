@@ -41,6 +41,8 @@ namespace GamePieces.Drones
                 {"offsetX", 0.13f}, {"offsetY", 1.15f},
                 {"sizeX", 1.16f},   {"sizeY", 2.34f}
             };
+            
+            this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
 
         protected override void Update() // TODO Check how to ovverride this correctly! Right now we are just hiding the base method!

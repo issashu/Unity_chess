@@ -38,6 +38,8 @@ namespace GamePieces.Humans
                 {"offsetX", 0.01f}, {"offsetY", 1.04f},
                 {"sizeX", 1.06f},   {"sizeY", 1.82f}
             };
+            
+            this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
     }
 }

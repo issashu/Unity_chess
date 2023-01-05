@@ -47,3 +47,6 @@ TagManager:
   - name: GamePieces
     uniqueID: 2603376425
     locked: 0
+  - name: StatusText
+    uniqueID: 4102212071
+    locked: 0

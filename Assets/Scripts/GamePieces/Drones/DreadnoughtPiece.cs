@@ -44,6 +44,8 @@ namespace GamePieces.Drones
                 {"offsetX", 0.07f}, {"offsetY", 1.36f},
                 {"sizeX", 1.40f},   {"sizeY", 2.88f}
             };
+            
+            this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
         
         protected override void ListThreatenedTiles()

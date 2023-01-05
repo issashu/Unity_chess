@@ -40,6 +40,8 @@ namespace GamePieces.Humans
                 {"offsetX", 0.10f}, {"offsetY", 1.62f},
                 {"sizeX", 1.16f},   {"sizeY", 3.64f}
             };
+            
+            this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
         
         protected override void ListPossibleMovesFromPosition()

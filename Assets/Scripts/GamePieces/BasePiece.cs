@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using AI;
+using Defines;
 using Enums;
 using GameBoard;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace GamePieces
 {
     public class BasePiece : MonoBehaviour  
     {
-        
+        /*---------MEMBERS---------------*/
         protected int maxMoveDistance;
         protected int maxAttackDistance;
         protected int attackPower;
@@ -19,19 +20,23 @@ namespace GamePieces
         protected int pieceTypeAndPointsValue;
         protected bool isAlive;
         protected bool isActive;
+        protected int [] movesXAxis;
+        protected int [] movesYAxis;
+        protected int[] attacksXAxis;
+        protected int[] attacksYAxis;
         protected Sprite gameSprite;
+        protected GameObject healthDisplayObject;
+        protected HealthText healthDisplay;
         protected AIDecisionLogic unitAiBehaviourLogic;
         protected List<Point> validMovesFromPosition;
         protected List<Point> threatenedTilesFromPosition;
         protected Point currentTilePosition;
         protected Dictionary<string, float> boxColliderSettings; 
         protected Dictionary<string, bool> allowedActions;
-        protected int [] movesXAxis;
-        protected int [] movesYAxis;
-        protected int[] attacksXAxis;
-        protected int[] attacksYAxis;
 
+        /*---------EVENTS---------------*/
         public static event EventHandler<BasePiece> OnHealthZero;
+        public static event EventHandler<String> OnDamageTaken; 
 
         protected virtual void Awake()
         {
@@ -62,6 +67,9 @@ namespace GamePieces
                 {"offsetX", 0.00f}, {"offsetY", 0.0f},
                 {"sizeX", 0.0f}, {"sizeY", 0.0f}
             };
+            
+            this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
+            this.healthDisplay.GetComponent<HealthText>().UpdateTextValue(this, this.CurrentPieceCoordinates.ToString());
         }
 
         protected virtual void Update()
@@ -76,14 +84,14 @@ namespace GamePieces
                 this.DeactivatePiece();
             }
         }
-
+        
+        /*-----------MOVEMENT LOGIC----------*/
         public virtual void SetCurrentPosition(int x, int y)
         {
             this.currentTilePosition.x = x;
             this.currentTilePosition.y = y;
         }
         
-        // TODO Do rethink to extract the validations in a separate class, so that pieces do not have access to board more then necessary. See UML
         public virtual void HighlightMovePath()
         {
             if (!this.AllowedActions["move"])
@@ -104,29 +112,7 @@ namespace GamePieces
                 tile.ChangeTileColorTint(Color.green);
             }
         }
-
-        public virtual void HighlightThreatenedTiles()
-        {
-            // TODO: Extract to Piece Manager and unify the two highlights. Code is almost the same except color...
-            if (!this.AllowedActions["attack"])
-                return;
-            
-            if (!this.isActive)
-                return;
-            
-            var gameBoard = GameBoard.GameBoard.Board;
-            var boardMatrix = gameBoard.GameBoardMatrix;
-
-            ListThreatenedTiles();
-
-            foreach (var point in this.threatenedTilesFromPosition)
-            {
-                var tile = boardMatrix[point.x, point.y];
-                tile.ChangeTileColorTint(Color.red);
-            }
-        }
         
-        /*-----------MOVEMENT LOGIC----------*/
         protected virtual void ListPossibleMovesFromPosition()
         {
             int directions = this.movesXAxis.Length;
@@ -164,10 +150,7 @@ namespace GamePieces
             
             if (!this.validMovesFromPosition.Contains(moveLocationPoint))
                 return;
-            
-            /*var moveLocationVector = ConversionUtils.WorldPositionFromCoordinates(targetLocation.XCoordinate, targetLocation.YCoordinate);
-            this.SetCurrentPosition(Mathf.RoundToInt(moveLocationVector.x), Mathf.RoundToInt(moveLocationVector.y));*/
-            
+
             this.MovePiece(startLocation, targetLocation);
         }
         
@@ -200,7 +183,28 @@ namespace GamePieces
             this.threatenedTilesFromPosition.Clear();
         }
         
+        
         /*-----------ATTACK LOGIC----------*/
+        public virtual void HighlightThreatenedTiles()
+        {
+            // TODO: Extract to Piece Manager and unify the two highlights. Code is almost the same except color...
+            if (!this.AllowedActions["attack"])
+                return;
+            
+            if (!this.isActive)
+                return;
+            
+            var gameBoard = GameBoard.GameBoard.Board;
+            var boardMatrix = gameBoard.GameBoardMatrix;
+
+            ListThreatenedTiles();
+
+            foreach (var point in this.threatenedTilesFromPosition)
+            {
+                var tile = boardMatrix[point.x, point.y];
+                tile.ChangeTileColorTint(Color.red);
+            }
+        }
         protected virtual void ListThreatenedTiles()
         {
             // TODO: Extract actions to a separate class to avoid the repetition in move and attack.
@@ -247,6 +251,7 @@ namespace GamePieces
         {
             this.hitPoints -= damage;
             this.ValidateHealth();
+            OnDamageTaken?.Invoke(this, this.hitPoints.ToString());
         }
 
         protected virtual void ValidateHealth()
@@ -287,6 +292,17 @@ namespace GamePieces
             this.allowedActions["move"] = true;
             this.allowedActions["attack"] = true;
         }
+
+        protected HealthText SetupHealthDisplay(string startValue)
+        {
+            healthDisplayObject = new GameObject("Health Display");
+            healthDisplayObject.AddComponent<HealthText>();
+            healthDisplayObject.GetComponent<MeshRenderer>().sortingLayerName = GameBoardConstants.HP_TEXT_LAYER;
+            healthDisplayObject.transform.position = new Vector3(0, 2.97f, 0);
+            healthDisplayObject.transform.SetParent(transform, worldPositionStays: false);
+    
+            return healthDisplayObject.GetComponent<HealthText>();
+        } 
         
         
         /*-----------PROPERTIES / GETTERS & SETTERS-------------*/

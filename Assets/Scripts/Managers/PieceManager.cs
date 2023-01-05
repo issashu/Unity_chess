@@ -140,6 +140,7 @@ namespace Managers
                 this._spawnedHumanPieces.Add(tankPiece);
             }
         }
+        
         private void SetupHumanJumpshipPieces()
         {
             for (int i = 0; i < GameSettings.JUMPSHIP_UNITS_AMMOUNT; i++)

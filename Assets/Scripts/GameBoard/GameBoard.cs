@@ -16,8 +16,7 @@ namespace GameBoard
         
         public ref BoardTile[,] GameBoardMatrix => ref _boardMatrix;
         public static GameBoard Board => _instance;
-       
-
+        
         private void Awake()
         {
             // Mostly sanity check, for clones
