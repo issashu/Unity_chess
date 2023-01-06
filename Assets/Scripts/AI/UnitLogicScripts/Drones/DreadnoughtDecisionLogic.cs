@@ -114,7 +114,6 @@ namespace AI
                 return;
             
             BasePiece dummyParameter = null;
-            this.selectedUnit.HighlightThreatenedTiles();
             this.selectedUnit.AttackAction(dummyParameter);
         }
         

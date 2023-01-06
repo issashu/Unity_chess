@@ -6,10 +6,10 @@ using Defines;
 using GameBoard;
 using GamePieces.Drones;
 using GamePieces.Humans;
-using Unity.VisualScripting;
+using UI;
+
 using UnityEngine;
-using UnityEngine.Serialization;
-using Color = UnityEngine.Color;
+
 
 namespace Managers
 {
@@ -18,10 +18,14 @@ namespace Managers
         private static GameManager _instance;
         public static GameManager Instance => _instance;
         
+        public static event EventHandler OnDifficultySwitchWipe;
+        public static event EventHandler<int> OnDifficultySwitchSpawn;
+        
         private int _gameDifficulty;
         private GameObject _gameBoard;
         private GameObject _gamePieces;
         private GameObject _turnSystem;
+        private GameObject _difficultySelector;
         private GameObject _aiPlayer;
 
         private void Awake()
@@ -32,10 +36,12 @@ namespace Managers
                 Destroy(this.gameObject);
                 return;
             }
-
             _instance = this;
+
+            this._gameDifficulty = (int) Enums.GameDifficulty.Easy;
+            SpawnMatrix.InitialiseSpawnMatrix();
+            SpawnMatrix.SetSpawns();
             
-            // TODO: Hunt and replace hard coded strings and magic numbers.
             this._gameBoard = new GameObject("GameBoard");
             this._gameBoard.AddComponent<GameBoard.GameBoard>();
 
@@ -48,9 +54,8 @@ namespace Managers
             // Individual components in order to add or remove easier at any moment
             this._aiPlayer = new GameObject("AI Controller");
             this._aiPlayer.AddComponent<AiController>();
-            this._aiPlayer.AddComponent<DroneDecisionLogic>();
-            this._aiPlayer.AddComponent<DreadnoughtDecisionLogic>();
-            this._aiPlayer.AddComponent<CommandUnitDecisionLogic>();
+
+            this._gameDifficulty = 1;
         }
 
         private void Start()
@@ -58,6 +63,8 @@ namespace Managers
             PieceManager.OnHumansWipe += DroneVictoryAchieved;
             PieceManager.OnAICommandUnitsWipe += HumanVictoryAchieved;
             DronePiece.OnReachingRowZero += DroneVictoryAchieved;
+            DifficultyDropdown.OnDifficultySwitch += ChangeDifficulty;
+            OnDifficultySwitchSpawn?.Invoke(this, this._gameDifficulty);
         }
         
         private static void DroneVictoryAchieved(object eventSender, EventArgs args)
@@ -72,6 +79,13 @@ namespace Managers
             Debug.Log("Humans team won!");
         }
 
+        private void ChangeDifficulty(object sender, int newDifficulty)
+        {
+            this._gameDifficulty = newDifficulty;
+            OnDifficultySwitchWipe?.Invoke(this, EventArgs.Empty);
+            OnDifficultySwitchSpawn?.Invoke(this,this._gameDifficulty);
+        }
+        
         public void QuitApplication()
         {
             Application.Quit();

@@ -1,5 +1,9 @@
+using System;
 using System.Drawing;
 using Defines;
+using GamePieces;
+using Managers;
+using UI;
 using Unity.VisualScripting;
 using UnityEngine;
 using Color = UnityEngine.Color;
@@ -16,7 +20,9 @@ namespace GameBoard
         
         public ref BoardTile[,] GameBoardMatrix => ref _boardMatrix;
         public static GameBoard Board => _instance;
-        
+
+        public static event EventHandler<BasePiece> OnTileWipe; 
+
         private void Awake()
         {
             // Mostly sanity check, for clones
@@ -38,6 +44,12 @@ namespace GameBoard
                     this._boardMatrix[x , y] = SetupTileObject(x, y);
                 }
             }
+        }
+
+        private void Start()
+        {
+            GameManager.OnDifficultySwitchWipe += WipeBoard;
+            GameManager.OnDifficultySwitchSpawn += SpawnBoard;
         }
 
         private BoardTile SetupTileObject(int boardX, int boardY)
@@ -80,5 +92,22 @@ namespace GameBoard
             return !isOutsideBoard;
         }
 
+        private void WipeBoard(object eventSender, EventArgs args)
+        {
+            foreach (var tile in this._boardMatrix)
+            {
+                var unitOnTile = tile.GetComponent<BoardTile>().TileOccupant;
+
+                if (!unitOnTile)
+                    continue;
+                
+                OnTileWipe?.Invoke(this, unitOnTile);
+            }
+        }
+
+        private void SpawnBoard(object eventSender, int gameDifficulty)
+        {
+            BoardSpawner.easyBoardSpawner(gameDifficulty);
+        }
     }
 }

@@ -14,4 +14,9 @@ namespace Enums
     {
         None = 0, Drone = 1, Dreadnought = 4, CommandUnit = 5
     }
+
+    public enum GameDifficulty
+    {
+        Easy = 0, Normal = 1, Hard = 2
+    }
 }
