@@ -220,7 +220,6 @@ namespace GamePieces
         /*-----------ATTACK LOGIC----------*/
         public virtual void HighlightThreatenedTiles()
         {
-            // TODO: Extract to Piece Manager and unify the two highlights. Code is almost the same except color...
             if (!this.AllowedActions["attack"])
                 return;
             
@@ -263,7 +262,6 @@ namespace GamePieces
         
         protected virtual void ListThreatenedTiles()
         {
-            // TODO: Extract actions to a separate class to avoid the repetition in move and attack.
             int shootingDirections = this.attacksXAxis.Length;
             var gameBoard = GameBoard.GameBoard.Board;
             var boardMatrix = gameBoard.GameBoardMatrix;
@@ -307,7 +305,6 @@ namespace GamePieces
 
         public virtual void DeactivatePiece()
         {
-            // TODO Move to Piece Manager
             this.isActive = false;
             ChangePieceColor(Color.grey);
         }
@@ -326,7 +323,7 @@ namespace GamePieces
 
         protected HealthText SetupHealthDisplay(string startValue)
         {
-            // TODO The health event is common and all pieces update with same value instead of each their own...
+            // TODO The health event is subscribed by all units and all pieces update with same value instead of each their own...
             healthDisplayObject = new GameObject("Health Display");
             healthDisplayObject.AddComponent<HealthText>();
             healthDisplayObject.GetComponent<MeshRenderer>().sortingLayerName = GameBoardConstants.HP_TEXT_LAYER;

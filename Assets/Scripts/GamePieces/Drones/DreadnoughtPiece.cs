@@ -73,7 +73,6 @@ namespace GamePieces.Drones
             this.validMovesFromPosition = new List<Point>();
             this.threatenedTilesFromPosition = new List<Point>();
             
-            // TODO Convert to arrays of Points called with the direction names :)
             this.movesXAxis = new [] { 0, 1, 1, 1, 0, -1,-1,-1};
             this.movesYAxis = new [] { 1, 1, 0,-1,-1, -1, 0, 1};
             
