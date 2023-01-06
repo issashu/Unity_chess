@@ -326,6 +326,7 @@ namespace GamePieces
 
         protected HealthText SetupHealthDisplay(string startValue)
         {
+            // TODO The health event is common and all pieces update with same value instead of each their own...
             healthDisplayObject = new GameObject("Health Display");
             healthDisplayObject.AddComponent<HealthText>();
             healthDisplayObject.GetComponent<MeshRenderer>().sortingLayerName = GameBoardConstants.HP_TEXT_LAYER;

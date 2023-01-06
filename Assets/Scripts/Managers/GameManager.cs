@@ -4,7 +4,7 @@ using Defines;
 using GameBoard;
 using GamePieces.Drones;
 using UI;
-
+using Unity.VisualScripting;
 using UnityEngine;
 
 
@@ -22,7 +22,8 @@ namespace Managers
         private GameObject _turnSystem;
         private GameObject _difficultySelector;
         private GameObject _aiPlayer;
-        
+        private GameObject _textPopUp;
+
         public static event EventHandler OnDifficultySwitchWipe;
         public static event EventHandler<int> OnDifficultySwitchSpawn;
         
@@ -54,7 +55,15 @@ namespace Managers
             this._aiPlayer = new GameObject("AI Controller");
             this._aiPlayer.AddComponent<AiController>();
 
+            this._textPopUp = new GameObject("EndGame display");
+            this._textPopUp.AddComponent<WinAnnouncementText>();
+            this._textPopUp.GetComponent<MeshRenderer>().sortingLayerName = GameBoardConstants.HP_TEXT_LAYER;
+            this._textPopUp.GetComponent<WinAnnouncementText>().SwitchActive();
+            this._textPopUp.transform.SetParent(transform, worldPositionStays: false);
+            
+            
             this._gameDifficulty = 1;
+
         }
 
         private void Start()
@@ -64,18 +73,21 @@ namespace Managers
             DronePiece.OnReachingRowZero += DroneVictoryAchieved;
             DifficultyDropdown.OnDifficultySwitch += ChangeDifficulty;
             BoardSpawner.easyBoardSpawner(this._gameDifficulty);
+            
         }
         
         private static void DroneVictoryAchieved(object eventSender, EventArgs args)
         {
-            // TODO Add some endgame pop-up logic here and stop app
-            Debug.Log("Drone team won!");
+            var popUp = GameManager.Instance._textPopUp.GetComponent<WinAnnouncementText>();
+            popUp.UpdateTextValue("Drone team won!");
+            popUp.SwitchActive();
         }
         
         private static void HumanVictoryAchieved(object eventSender, EventArgs args)
         {
-            // TODO Add some endgame pop-up logic here and stop app
-            Debug.Log("Humans team won!");
+            var popUp = GameManager.Instance._textPopUp.GetComponent<WinAnnouncementText>();
+            popUp.UpdateTextValue("Humans team won!");
+            popUp.SwitchActive();
         }
 
         private void ChangeDifficulty(object sender, int newDifficulty)

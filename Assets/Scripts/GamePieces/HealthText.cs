@@ -23,7 +23,7 @@ namespace GamePieces
             this._healthText.horizontalAlignment = HorizontalAlignmentOptions.Center;
             this._healthText.color = Color.white;
 
-            BasePiece.OnDamageTaken += this.UpdateTextValue;;
+            BasePiece.OnDamageTaken += this.UpdateTextValue;
         }
 
         public void UpdateTextValue(object sender, string newTextValue)
