@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Enums;
-using GameBoard;
 using UnityEngine;
 using Utils;
 
@@ -9,6 +7,10 @@ namespace GamePieces.Humans
 {
     public class JumpshipPiece : BasePiece
     {
+        /*-----------MEMBERS-------------------*/
+        
+        
+        /*-----------METHODS-------------------*/
         protected override void Awake()
         {
             this.maxMoveDistance = 0;
@@ -16,6 +18,7 @@ namespace GamePieces.Humans
             this.attackPower = 2;
             this.hitPoints = 2;
             this.gameTeam = (int) FactionEnum.Humans;
+            this.pieceTypeAndPointsValue = (int) HumanUnits.Jumpship;
             this.isAlive = true;
             this.isActive = true;
             this.currentTilePosition = new Point(0, 0);
@@ -39,6 +42,8 @@ namespace GamePieces.Humans
                 {"offsetX", 0.10f}, {"offsetY", 1.62f},
                 {"sizeX", 1.16f},   {"sizeY", 3.64f}
             };
+            
+            this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
         
         protected override void ListPossibleMovesFromPosition()
@@ -53,15 +58,17 @@ namespace GamePieces.Humans
             {
                 var newPosition = new Point(this.currentTilePosition.x + movesXAxis[i],
                                             this.currentTilePosition.y + movesYAxis[i]);
+                
                 if (!GameBoard.GameBoard.Board.isPointWithinBoardLimits(newPosition))
                     continue;
                 
-                // TODO: Code repetition with basic piece. Extract to a method 
+              
                 var tile = boardMatrix[newPosition.x, newPosition.y];
+                
                 if (!tile.isTileOccupied())
-                {
                     this.validMovesFromPosition.Add(newPosition);
-                }
+                
+                break;
             }
         }
     }

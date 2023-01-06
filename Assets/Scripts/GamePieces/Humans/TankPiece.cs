@@ -7,6 +7,10 @@ namespace GamePieces.Humans
 {
     public class TankPiece : BasePiece
     {
+        /*-----------MEMBERS-------------------*/
+        
+        
+        /*-----------METHODS-------------------*/
         protected override void Awake()
         {
             this.maxMoveDistance = 3;
@@ -14,6 +18,7 @@ namespace GamePieces.Humans
             this.attackPower = 2;
             this.hitPoints = 4;
             this.gameTeam = (int) FactionEnum.Humans;
+            this.pieceTypeAndPointsValue = (int) HumanUnits.Tank;
             this.isAlive = true;
             this.isActive = true;
             this.currentTilePosition = new Point(0, 0);
@@ -37,6 +42,8 @@ namespace GamePieces.Humans
                 {"offsetX", 0.01f}, {"offsetY", 1.04f},
                 {"sizeX", 1.06f},   {"sizeY", 1.82f}
             };
+            
+            this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
     }
 }

@@ -1,6 +1,7 @@
-using System.Drawing;
+using System;
 using Defines;
-using Unity.VisualScripting;
+using GamePieces;
+using Managers;
 using UnityEngine;
 using Color = UnityEngine.Color;
 using Point = Utils.Point;
@@ -9,18 +10,42 @@ namespace GameBoard
 {
     public class GameBoard: MonoBehaviour
     {
+        /*-----------MEMBERS-------------------*/
+        public static GameBoard Board => _instance;
+        public static event EventHandler<BasePiece> OnTileWipe; 
         private static GameBoard _instance;
+        
+        public ref BoardTile[,] GameBoardMatrix => ref _boardMatrix;
         private int _boardHeight;
         private int _boardWidth;
         private BoardTile[,] _boardMatrix;
-        
-        public ref BoardTile[,] GameBoardMatrix => ref _boardMatrix;
-        public static GameBoard Board => _instance;
-       
 
+        /*-----------METHODS-------------------*/
+        
+        public void ClearBoardColors()
+        {
+            foreach (var tile in _boardMatrix)
+            {
+                tile.ChangeTileColorTint(Color.white);
+            }
+        }
+        public bool isPointWithinBoardLimits(Point point)
+        {
+            // Checks if tile is outside board and returns false if it is, or true - if it is within board
+            var isOutsideBoard= point.x < 0 || point.y < 0 || point.x >= GameBoardConstants.BOARD_HEIGHT ||
+                                point.y >= GameBoardConstants.BOARD_WIDTH;
+            return !isOutsideBoard;
+        }
         private void Awake()
         {
+            // Mostly sanity check, for clones
+            if (_instance != null && _instance != this)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
             _instance = this;
+            
             this._boardHeight = Defines.GameBoardConstants.BOARD_HEIGHT;
             this._boardWidth = Defines.GameBoardConstants.BOARD_WIDTH;
             this._boardMatrix = new BoardTile[this._boardHeight, this._boardWidth];
@@ -33,7 +58,11 @@ namespace GameBoard
                 }
             }
         }
-
+        private void Start()
+        {
+            GameManager.OnDifficultySwitchWipe += WipeBoard;
+            GameManager.OnDifficultySwitchSpawn += SpawnBoard;
+        }
         private BoardTile SetupTileObject(int boardX, int boardY)
         {
             var boardTile = new GameObject($"Tile {boardX} {boardY}");
@@ -57,22 +86,22 @@ namespace GameBoard
 
             return boardTile.GetComponent<BoardTile>();
         }
-
-        public void ClearBoardColors()
+        private void WipeBoard(object eventSender, EventArgs args)
         {
-            foreach (var tile in _boardMatrix)
+            foreach (var tile in this._boardMatrix)
             {
-                tile.ChangeTileColorTint(Color.white);
+                var unitOnTile = tile.GetComponent<BoardTile>().TileOccupant;
+
+                if (!unitOnTile)
+                    continue;
+                
+                OnTileWipe?.Invoke(this, unitOnTile);
             }
         }
 
-        public bool isPointWithinBoardLimits(Point point)
+        private void SpawnBoard(object eventSender, int gameDifficulty)
         {
-            // Checks if tile is outside board and returns false if it is, or true - if it is within board
-            var isOutsideBoard= point.x < 0 || point.y < 0 || point.x >= GameBoardConstants.BOARD_HEIGHT ||
-                                point.y >= GameBoardConstants.BOARD_WIDTH;
-            return !isOutsideBoard;
+            BoardSpawner.easyBoardSpawner(gameDifficulty);
         }
-
     }
 }

@@ -6,8 +6,11 @@ using Utils;
 namespace GamePieces.Humans
 {
     public class GruntPiece : BasePiece
-    
     {
+        /*-----------MEMBERS-------------------*/
+        
+        
+        /*-----------METHODS-------------------*/
         protected override void Awake()
         {
             this.maxMoveDistance = 1;
@@ -15,6 +18,7 @@ namespace GamePieces.Humans
             this.attackPower = 1;
             this.hitPoints = 2;
             this.gameTeam = (int) FactionEnum.Humans;
+            this.pieceTypeAndPointsValue = (int) HumanUnits.Grunt;
             this.isAlive = true;
             this.isActive = true;
             this.currentTilePosition = new Point(0, 0);
@@ -37,6 +41,8 @@ namespace GamePieces.Humans
                 {"offsetX", 0.06f}, {"offsetY", 0.81f},
                 {"sizeX", 0.55f},   {"sizeY", 1.57f}
             };
+            
+            this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
     }
 }

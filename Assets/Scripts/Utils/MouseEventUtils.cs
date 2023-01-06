@@ -11,14 +11,29 @@ namespace Utils
 {
     public class MouseEventUtils : MonoBehaviour
     {
+        /*-----------MEMBERS-------------------*/
+        private static MouseEventUtils _instance;
+        public static MouseEventUtils Instance => _instance;
+        
         private const int _leftMouseButton = 0;
+        
         private RaycastHit2D _target;
         private GameObject _selectedGamePiece;
         private GameBoard.GameBoard _gameBoardScript;
         private BasePiece _selectedGamePieceScript;
-
+        
+        /*-----------METHODS-------------------*/
         private void Start()
         {
+            // Mostly sanity check, for clones
+            if (_instance != null && _instance != this)
+            {
+                Destroy(this.gameObject);
+                return;
+            }
+            _instance = this;
+            
+            
             this._gameBoardScript = GameBoard.GameBoard.Board;
             this._selectedGamePiece = null;
             this._selectedGamePieceScript = null;
@@ -26,7 +41,6 @@ namespace Utils
         
         private void Update()
         {
-            // TODO Make it an event in some Manager
             if (Input.GetMouseButtonDown(_leftMouseButton))
             {
                 this._target = GetMouseRealTarget();
@@ -53,6 +67,7 @@ namespace Utils
 
         private void HandleSelectedObject(GameObject clickedObject)
         {
+            /*Some expensive calls to GetComponent, but could not go for static instance in this case ande cache...*/
             if (clickedObject is null)
                 return;
             
@@ -124,7 +139,7 @@ namespace Utils
             
             var startTile = Utils.ConversionUtils.GetTileAtPoint(this._selectedGamePieceScript.CurrentPieceCoordinates);
                 
-            this._selectedGamePieceScript.MoveAction(startTile, destinationTile);
+            this._selectedGamePieceScript.PreciseMoveAction(startTile, destinationTile);
         }
 
         private void ExecuteAttackAction(BasePiece attackTarget)
@@ -134,9 +149,8 @@ namespace Utils
             
             if (PieceManager.arePiecesSameTeam(attackTarget, this._selectedGamePieceScript))
                 return;
-                
-            var damageDone = this._selectedGamePieceScript.DamageDone;
-            this._selectedGamePieceScript.AttackAction(attackTarget, damageDone);
+            
+            this._selectedGamePieceScript.AttackAction(attackTarget);
         }
     }
 }

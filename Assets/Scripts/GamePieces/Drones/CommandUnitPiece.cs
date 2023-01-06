@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using AI;
 using Enums;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -7,6 +9,15 @@ namespace GamePieces.Drones
 {
     public class CommandUnitPiece : BasePiece
     {
+        /*-----------MEMBERS-------------------*/
+        
+        
+        /*-----------METHODS-------------------*/
+        public override void ResetPieceActions()
+        {
+            this.allowedActions["move"] = true;
+            this.allowedActions["attack"] = false;
+        }
         protected override void Awake()
         {
             this.maxMoveDistance = 1;
@@ -14,10 +25,12 @@ namespace GamePieces.Drones
             this.attackPower = 0;
             this.hitPoints = 5;
             this.gameTeam = (int) FactionEnum.Drones;
+            this.pieceTypeAndPointsValue = (int) DroneUnits.CommandUnit;
             this.isAlive = true;
             this.isActive = true;
             this.currentTilePosition = new Point(0, 0);
             this.gameSprite = Resources.Load<Sprite>("Sprites/Drones/CommandUnit");
+            this.unitAiBehaviourLogic = this.GetComponent<CommandUnitDecisionLogic>();
             this.currentTilePosition = new Point(0, 0);
             this.validMovesFromPosition = new List<Point>();
             this.threatenedTilesFromPosition = new List<Point>();
@@ -38,12 +51,10 @@ namespace GamePieces.Drones
                 {"offsetX", 0.13f}, {"offsetY", 1.15f},
                 {"sizeX", 1.16f},   {"sizeY", 2.34f}
             };
+            
+            this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
         
-        public override void ResetPieceActions()
-        {
-            this.allowedActions["move"] = true;
-            this.allowedActions["attack"] = false;
-        }
+        
     }
 }

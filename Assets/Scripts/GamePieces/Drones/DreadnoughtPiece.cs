@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using AI;
 using Enums;
 using Managers;
 using UnityEngine;
@@ -8,6 +9,53 @@ namespace GamePieces.Drones
 {
     public class DreadnoughtPiece : BasePiece
     {
+        /*-----------MEMBERS-------------------*/
+        
+        
+        
+        /*-----------METHODS-------------------*/
+       
+        public override void HighlightThreatenedTiles()
+        {
+            if (!this.AllowedActions["attack"])
+                return;
+            
+            if (!this.isActive)
+                return;
+            
+            var boardMatrix = GameBoard.GameBoard.Board.GameBoardMatrix;
+
+            ListThreatenedTiles();
+
+            foreach (var point in this.threatenedTilesFromPosition)
+            {
+                var tile = boardMatrix[point.x, point.y];
+                if (!tile.isTileOccupied())
+                    continue;
+                
+                if(PieceManager.arePiecesSameTeam(this, tile.TileOccupant))
+                    continue;
+                
+                tile.ChangeTileColorTint(Color.red);
+            }
+        }
+        
+        public override void AttackAction(BasePiece target)
+        {
+            foreach (var location in this.threatenedTilesFromPosition)
+            {
+                var tile = ConversionUtils.GetTileAtPoint(location);
+                if (!tile.isTileOccupied())
+                    continue;
+                
+                if (!PieceManager.arePiecesSameTeam(this, tile.TileOccupant))
+                    tile.TileOccupant.TakeDamage(this.attackPower);
+            }
+            
+            this.allowedActions["attack"] = false;
+            this.threatenedTilesFromPosition.Clear();
+        }
+        
         protected override void Awake()
         {
             this.maxMoveDistance = 1;
@@ -15,14 +63,17 @@ namespace GamePieces.Drones
             this.attackPower = 2;
             this.hitPoints = 5;
             this.gameTeam = (int) FactionEnum.Drones;
+            this.pieceTypeAndPointsValue = (int) DroneUnits.Dreadnought;
             this.isAlive = true;
             this.isActive = true;
             this.currentTilePosition = new Point(0, 0);
             this.gameSprite = Resources.Load<Sprite>("Sprites/Drones/Dreadnought");
+            this.unitAiBehaviourLogic = this.GetComponent<DreadnoughtDecisionLogic>();
             this.currentTilePosition = new Point(0, 0);
             this.validMovesFromPosition = new List<Point>();
             this.threatenedTilesFromPosition = new List<Point>();
-
+            
+            // TODO Convert to arrays of Points called with the direction names :)
             this.movesXAxis = new [] { 0, 1, 1, 1, 0, -1,-1,-1};
             this.movesYAxis = new [] { 1, 1, 0,-1,-1, -1, 0, 1};
             
@@ -39,6 +90,8 @@ namespace GamePieces.Drones
                 {"offsetX", 0.07f}, {"offsetY", 1.36f},
                 {"sizeX", 1.40f},   {"sizeY", 2.88f}
             };
+            
+            this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
         
         protected override void ListThreatenedTiles()
@@ -62,47 +115,7 @@ namespace GamePieces.Drones
             }
         }
         
-        public override void HighlightThreatenedTiles()
-        {
-            if (!this.AllowedActions["attack"])
-                return;
-            
-            if (!this.isActive)
-                return;
-            
-            // TODO: Extract to Piece Manager and unify the two highlights. Code is almost the same except color...
-            var boardMatrix = GameBoard.GameBoard.Board.GameBoardMatrix;
-
-            ListThreatenedTiles();
-
-            foreach (var point in this.threatenedTilesFromPosition)
-            {
-                var tile = boardMatrix[point.x, point.y];
-                if (!tile.isTileOccupied())
-                    continue;
-                
-                if(PieceManager.arePiecesSameTeam(this, tile.TileOccupant))
-                    continue;
-                
-                tile.ChangeTileColorTint(Color.red);
-            }
-        }
-        
-        public override void AttackAction(BasePiece target, int damageDone)
-        {
-            foreach (var location in this.threatenedTilesFromPosition)
-            {
-                var tile = ConversionUtils.GetTileAtPoint(location);
-                if (!tile.isTileOccupied())
-                    continue;
-                
-                if (!PieceManager.arePiecesSameTeam(this, tile.TileOccupant))
-                    tile.TileOccupant.TakeDamage(damageDone);
-            }
-            
-            this.allowedActions["attack"] = false;
-            this.threatenedTilesFromPosition.Clear();
-        }
+      
         
         
     }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GamePieces;
 using UnityEngine;
 using Utils;
@@ -7,11 +6,10 @@ namespace GameBoard
 {
     public class BoardTile: MonoBehaviour
     {
-        /*---------------STATICS---------------*/
-        private static BoardTile _instance;
+        /*-----------MEMBERS-------------------*/
         public static BoardTile Tile => _instance;
-
-        /*---------------PRIVATE---------------*/
+        private static BoardTile _instance; 
+        
         private Sprite _tileSprite;
         private float _tileHeight;
         private float _tileWidth;
@@ -20,17 +18,18 @@ namespace GameBoard
         private BasePiece _occupyingUnit;
 
         public SpriteRenderer TileSpriteRenderer => this.GetComponent<SpriteRenderer>();
-
-        private void Awake()
-        {
-            this._tileSprite = Resources.Load<Sprite>("Sprites/BoardTiles/Board Tile");
-            this._tileHeight = Defines.GameBoardConstants.TILE_HEIGHT;
-            this._tileWidth = Defines.GameBoardConstants.TILE_WIDTH;
-            this._isPassable = true;
-            _instance = this;
-        }
+        public Sprite TileSprite => _tileSprite;
+        public BasePiece TileOccupant => _occupyingUnit;
+        public float TileHeight => _tileHeight;
+        public float TileWidth => _tileWidth;
+      
+        public bool IsTileTraversable => _isPassable;
+        public int XCoordinate => _objectCoordinates.x;
+        public int YCoordinate => _objectCoordinates.y;
         
-        /*---------------PUBLIC----------------*/
+
+        /*-----------METHODS-------------------*/
+           
         public void UpdateTileGridPosition(int x, int y)
         {
             _objectCoordinates = new Point(x, y);
@@ -55,15 +54,16 @@ namespace GameBoard
         {
             return this._occupyingUnit is not null;
         }
+        private void Awake()
+        {
+            this._tileSprite = Resources.Load<Sprite>("Sprites/BoardTiles/Board Tile");
+            this._tileHeight = Defines.GameBoardConstants.TILE_HEIGHT;
+            this._tileWidth = Defines.GameBoardConstants.TILE_WIDTH;
+            this._isPassable = true;
+            _instance = this;
+        }
+        
 
         
-        public float TileHeight => _tileHeight;
-        public float TileWidth => _tileWidth;
-        public Sprite TileSprite => _tileSprite;
-        public bool IsTileTraversable => _isPassable;
-        public int XCoordinate => _objectCoordinates.x;
-        public int YCoordinate => _objectCoordinates.y;
-
-        public BasePiece TileOccupant => _occupyingUnit;
     }
 }
