@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Enums;
+using GameBoard;
 using UnityEngine;
 using Utils;
 
