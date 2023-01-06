@@ -56,15 +56,17 @@ namespace GamePieces.Humans
             {
                 var newPosition = new Point(this.currentTilePosition.x + movesXAxis[i],
                                             this.currentTilePosition.y + movesYAxis[i]);
+                
                 if (!GameBoard.GameBoard.Board.isPointWithinBoardLimits(newPosition))
                     continue;
                 
-                // TODO: Code repetition with basic piece. Extract to a method 
+              
                 var tile = boardMatrix[newPosition.x, newPosition.y];
+                
                 if (!tile.isTileOccupied())
-                {
                     this.validMovesFromPosition.Add(newPosition);
-                }
+                
+                break;
             }
         }
     }

@@ -4,6 +4,7 @@ using AI;
 using Defines;
 using Enums;
 using GameBoard;
+using Managers;
 using UnityEngine;
 using Utils;
 
@@ -223,17 +224,14 @@ namespace GamePieces
                         continue;
 
                     var tile = boardMatrix[attackTile.x, attackTile.y];
+                    
                     if (!tile.isTileOccupied())
                         continue;
-                    // TODO Add here logic not to continue targeting beyond first unit 
 
-                    if (tile.TileOccupant.GetComponent<BasePiece>().PieceFaction == this.gameTeam) 
-                        //TODO We have a method to compare teams. use it!
-                    {
-                        continue;
-                    }
-                    this.threatenedTilesFromPosition.Add(attackTile);
-                    break; // We stop in any given direction after we hit first unit. Can be overriden for say..piercing bullets
+                    if (!PieceManager.arePiecesSameTeam(tile.TileOccupant.GetComponent<BasePiece>(), this))
+                        this.threatenedTilesFromPosition.Add(attackTile);
+                    
+                    break;  // We stop in any given direction after we hit first unit. Can be overriden for say..piercing bullets
                 }
             }
         }

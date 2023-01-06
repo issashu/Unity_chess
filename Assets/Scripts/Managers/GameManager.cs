@@ -64,7 +64,7 @@ namespace Managers
             PieceManager.OnAICommandUnitsWipe += HumanVictoryAchieved;
             DronePiece.OnReachingRowZero += DroneVictoryAchieved;
             DifficultyDropdown.OnDifficultySwitch += ChangeDifficulty;
-            OnDifficultySwitchSpawn?.Invoke(this, this._gameDifficulty);
+            BoardSpawner.easyBoardSpawner(this._gameDifficulty);
         }
         
         private static void DroneVictoryAchieved(object eventSender, EventArgs args)
