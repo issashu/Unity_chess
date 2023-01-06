@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using AI;
 using Defines;
 using GameBoard;
 using GamePieces.Drones;
-using GamePieces.Humans;
 using UI;
 
 using UnityEngine;
@@ -15,11 +12,9 @@ namespace Managers
 {
     public class GameManager : MonoBehaviour
     {
+        /*-----------MEMBERS-------------------*/
         private static GameManager _instance;
         public static GameManager Instance => _instance;
-        
-        public static event EventHandler OnDifficultySwitchWipe;
-        public static event EventHandler<int> OnDifficultySwitchSpawn;
         
         private int _gameDifficulty;
         private GameObject _gameBoard;
@@ -27,7 +22,11 @@ namespace Managers
         private GameObject _turnSystem;
         private GameObject _difficultySelector;
         private GameObject _aiPlayer;
-
+        
+        public static event EventHandler OnDifficultySwitchWipe;
+        public static event EventHandler<int> OnDifficultySwitchSpawn;
+        
+        /*-----------METHODS-------------------*/
         private void Awake()
         {
             // Mostly sanity check, for clones

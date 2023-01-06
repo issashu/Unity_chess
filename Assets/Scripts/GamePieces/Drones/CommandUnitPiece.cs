@@ -9,6 +9,15 @@ namespace GamePieces.Drones
 {
     public class CommandUnitPiece : BasePiece
     {
+        /*-----------MEMBERS-------------------*/
+        
+        
+        /*-----------METHODS-------------------*/
+        public override void ResetPieceActions()
+        {
+            this.allowedActions["move"] = true;
+            this.allowedActions["attack"] = false;
+        }
         protected override void Awake()
         {
             this.maxMoveDistance = 1;
@@ -46,10 +55,6 @@ namespace GamePieces.Drones
             this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
         
-        public override void ResetPieceActions()
-        {
-            this.allowedActions["move"] = true;
-            this.allowedActions["attack"] = false;
-        }
+        
     }
 }

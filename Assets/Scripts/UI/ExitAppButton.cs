@@ -6,8 +6,10 @@ namespace UI
 {
     public class ExitAppButton : MonoBehaviour
     {
+        /*-----------MEMBERS-------------------*/
         private Button _buttonObject;
-
+        
+        /*-----------METHODS-------------------*/
         private void Awake()
         {
             this._buttonObject = GameObject.Find("QuitApplicationButton").GetComponent<Button>();

@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using Defines;
 using Enums;
 using UnityEngine;
 using GameBoard;
 using GamePieces;
-using GamePieces.Drones;
 using Managers;
 using Utils;
 
@@ -13,17 +11,32 @@ namespace AI
 {
     public class AiController : MonoBehaviour
     {
-        private static AiController _instance;
+        /*-----------MEMBERS-------------------*/
         public static AiController AIController => _instance;
+        private static AiController _instance;
         
+        protected List<GameObject> droneUnits;
+        protected List<GameObject> commandUnits;
         private GameBoard.GameBoard _gameBoard;
         private BoardTile[,] _boardMatrix;
         private PieceManager _pieceManager;
         private TurnManager _turnManager;
-        protected List<GameObject> droneUnits;
-        protected List<GameObject> commandUnits;
-        // TODO Add refferences to scripts in a List for unit logics
-
+        
+        /*-----------METHODS-------------------*/
+        
+        public void SelectUnit(BasePiece droneUnitSelected)
+        {
+            this.HighlightUnitSelectedByAi(droneUnitSelected);
+            droneUnitSelected.HighlightMovePath();
+            droneUnitSelected.HighlightThreatenedTiles();
+        }
+        
+        public void HighlightUnitSelectedByAi(BasePiece selectedUnit)
+        {
+            selectedUnit.ChangePieceColor(Color.cyan);
+            
+        }
+        
         private void Awake()
         {
             // Mostly sanity check, for clones
@@ -72,19 +85,6 @@ namespace AI
                 selectedUnitLogic.ExecuteUnitBehaviour(selectedUnit);
                 this._gameBoard.ClearBoardColors();
             }
-        }
-
-        public void SelectUnit(BasePiece droneUnitSelected)
-        {
-            this.HighlightUnitSelectedByAi(droneUnitSelected);
-            droneUnitSelected.HighlightMovePath();
-            droneUnitSelected.HighlightThreatenedTiles();
-        }
-        
-        public void HighlightUnitSelectedByAi(BasePiece selectedUnit)
-        {
-            selectedUnit.ChangePieceColor(Color.cyan);
-            
         }
         
         private void EndAiTurn()

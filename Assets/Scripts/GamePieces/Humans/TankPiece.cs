@@ -7,6 +7,10 @@ namespace GamePieces.Humans
 {
     public class TankPiece : BasePiece
     {
+        /*-----------MEMBERS-------------------*/
+        
+        
+        /*-----------METHODS-------------------*/
         protected override void Awake()
         {
             this.maxMoveDistance = 3;

@@ -6,8 +6,11 @@ using Utils;
 namespace GamePieces.Humans
 {
     public class GruntPiece : BasePiece
-    
     {
+        /*-----------MEMBERS-------------------*/
+        
+        
+        /*-----------METHODS-------------------*/
         protected override void Awake()
         {
             this.maxMoveDistance = 1;

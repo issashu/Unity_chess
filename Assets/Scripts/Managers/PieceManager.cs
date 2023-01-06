@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
-using Defines;
 using Enums;
 using GamePieces;
 using UnityEngine;
 using Utils;
-using Random = UnityEngine.Random;
+
 
 namespace Managers
 {
     public class PieceManager: MonoBehaviour
     {
+        /*-----------MEMBERS-------------------*/
         private char[,] _spawnMatrix;
         private static PieceManager _instance;
         public static PieceManager Instance => _instance;
@@ -21,8 +21,13 @@ namespace Managers
         private List<GameObject> _spawnedHumanPieces;
         private List<GameObject> _spawnedAIPieces;
         private List<GameObject> _spawnedAICommandUnits;
-
-         private void Awake()
+        
+        public List<GameObject> AiPieces => this._spawnedAIPieces;
+        public List<GameObject> HumanPieces => this._spawnedHumanPieces;
+        public List<GameObject> DroneCommandUnits => this._spawnedAICommandUnits;
+        
+        /*-----------METHODS-------------------*/
+        private void Awake()
         { 
             // Mostly sanity check, for clones
             if (_instance != null && _instance != this)
@@ -62,8 +67,6 @@ namespace Managers
             if (this._spawnedAICommandUnits.Count == 0)
             {
                 OnAICommandUnitsWipe?.Invoke(this, EventArgs.Empty);
-                int tileXPosition = Random.Range(0, GameBoardConstants.HUMANS_SPAWN_ROWS);
-
             }
         }
 
@@ -147,9 +150,5 @@ namespace Managers
                     break;
             }
         }
-
-        public List<GameObject> AiPieces => this._spawnedAIPieces;
-        public List<GameObject> HumanPieces => this._spawnedHumanPieces;
-        public List<GameObject> DroneCommandUnits => this._spawnedAICommandUnits;
     }
 }

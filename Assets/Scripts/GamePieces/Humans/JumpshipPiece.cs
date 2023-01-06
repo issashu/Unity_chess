@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Enums;
-using GameBoard;
 using UnityEngine;
 using Utils;
 
@@ -9,6 +7,10 @@ namespace GamePieces.Humans
 {
     public class JumpshipPiece : BasePiece
     {
+        /*-----------MEMBERS-------------------*/
+        
+        
+        /*-----------METHODS-------------------*/
         protected override void Awake()
         {
             this.maxMoveDistance = 0;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using AI;
 using Enums;
 using UnityEngine;
 using Utils;
@@ -9,7 +8,10 @@ namespace GamePieces.Drones
 {
     public class DronePiece : BasePiece
     {
+        /*-----------MEMBERS-------------------*/
         public static event EventHandler OnReachingRowZero;
+        
+        /*-----------METHODS-------------------*/
         protected override void Awake()
         {
             this.maxMoveDistance = 1;
@@ -45,7 +47,7 @@ namespace GamePieces.Drones
             this.healthDisplay = SetupHealthDisplay(this.HitPoints.ToString());
         }
 
-        protected override void Update() // TODO Check how to ovverride this correctly! Right now we are just hiding the base method!
+        protected override void Update() 
         {
             base.Update();
             if (this.CurrentPieceCoordinates.x == 0)

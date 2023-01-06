@@ -1,9 +1,6 @@
-using System;
-using System.Linq;
-using Defines;
 using GamePieces;
 using Utils;
-using Unity.VisualScripting;
+
 
 namespace AI
 {
@@ -15,8 +12,10 @@ namespace AI
         */
     public class DroneDecisionLogic : AIDecisionLogic
     {
+        /*-----------MEMBERS-------------------*/
         private BasePiece selectedUnit;
-
+        
+        /*-----------METHODS-------------------*/
         public override void ExecuteUnitBehaviour(BasePiece droneUnit)
         {
             if (droneUnit == null)

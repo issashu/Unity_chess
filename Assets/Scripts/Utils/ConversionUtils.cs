@@ -10,7 +10,9 @@ namespace Utils
 {
     public class ConversionUtils
     {
-
+        /*-----------MEMBERS-------------------*/
+        
+        /*-----------METHODS-------------------*/
         public static Vector2 WorldPositionFromCoordinates(int x, int y, int objectSize=1)
         {
             return new Vector2(x, y) * objectSize;
@@ -38,9 +40,11 @@ namespace Utils
     
     public struct Point
     {
+        /*-----------MEMBERS-------------------*/
         public int x;
         public int y;
-
+        
+        /*-----------METHODS-------------------*/
         public Point(int x, int y)
         {
             this.x = x;
@@ -76,6 +80,7 @@ namespace Utils
 
             return tmp;
         }
+        
         public static Point operator - (Point one, Point other)
         {
             var tmp = new Point(0, 0);

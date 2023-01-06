@@ -1,10 +1,7 @@
 using System;
-using System.Drawing;
 using Defines;
 using GamePieces;
 using Managers;
-using UI;
-using Unity.VisualScripting;
 using UnityEngine;
 using Color = UnityEngine.Color;
 using Point = Utils.Point;
@@ -13,16 +10,32 @@ namespace GameBoard
 {
     public class GameBoard: MonoBehaviour
     {
+        /*-----------MEMBERS-------------------*/
+        public static GameBoard Board => _instance;
+        public static event EventHandler<BasePiece> OnTileWipe; 
         private static GameBoard _instance;
+        
+        public ref BoardTile[,] GameBoardMatrix => ref _boardMatrix;
         private int _boardHeight;
         private int _boardWidth;
         private BoardTile[,] _boardMatrix;
+
+        /*-----------METHODS-------------------*/
         
-        public ref BoardTile[,] GameBoardMatrix => ref _boardMatrix;
-        public static GameBoard Board => _instance;
-
-        public static event EventHandler<BasePiece> OnTileWipe; 
-
+        public void ClearBoardColors()
+        {
+            foreach (var tile in _boardMatrix)
+            {
+                tile.ChangeTileColorTint(Color.white);
+            }
+        }
+        public bool isPointWithinBoardLimits(Point point)
+        {
+            // Checks if tile is outside board and returns false if it is, or true - if it is within board
+            var isOutsideBoard= point.x < 0 || point.y < 0 || point.x >= GameBoardConstants.BOARD_HEIGHT ||
+                                point.y >= GameBoardConstants.BOARD_WIDTH;
+            return !isOutsideBoard;
+        }
         private void Awake()
         {
             // Mostly sanity check, for clones
@@ -45,13 +58,11 @@ namespace GameBoard
                 }
             }
         }
-
         private void Start()
         {
             GameManager.OnDifficultySwitchWipe += WipeBoard;
             GameManager.OnDifficultySwitchSpawn += SpawnBoard;
         }
-
         private BoardTile SetupTileObject(int boardX, int boardY)
         {
             var boardTile = new GameObject($"Tile {boardX} {boardY}");
@@ -75,23 +86,6 @@ namespace GameBoard
 
             return boardTile.GetComponent<BoardTile>();
         }
-
-        public void ClearBoardColors()
-        {
-            foreach (var tile in _boardMatrix)
-            {
-                tile.ChangeTileColorTint(Color.white);
-            }
-        }
-
-        public bool isPointWithinBoardLimits(Point point)
-        {
-            // Checks if tile is outside board and returns false if it is, or true - if it is within board
-            var isOutsideBoard= point.x < 0 || point.y < 0 || point.x >= GameBoardConstants.BOARD_HEIGHT ||
-                                point.y >= GameBoardConstants.BOARD_WIDTH;
-            return !isOutsideBoard;
-        }
-
         private void WipeBoard(object eventSender, EventArgs args)
         {
             foreach (var tile in this._boardMatrix)

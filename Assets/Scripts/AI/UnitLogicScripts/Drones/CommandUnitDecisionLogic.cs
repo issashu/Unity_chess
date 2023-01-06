@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using Defines;
 using GamePieces;
 using Utils;
 
@@ -12,8 +10,10 @@ namespace AI
      */
     public class CommandUnitDecisionLogic : AIDecisionLogic
     {
+        /*-----------MEMBERS-------------------*/
         protected BasePiece droneUnitSelected;
         
+        /*-----------METHODS-------------------*/
         public override void ExecuteUnitBehaviour(BasePiece commandUnit)
         {
             if (commandUnit == null)

@@ -6,6 +6,10 @@ namespace GameBoard
 {
     public class BoardSpawner
     {
+        /*-----------MEMBERS-------------------*/
+        
+        
+        /*-----------METHODS-------------------*/
         public static void easyBoardSpawner(int gameDifficulty)
         {
             var pieceManagerInstance = PieceManager.Instance;
@@ -26,7 +30,6 @@ namespace GameBoard
                     break;
             }
             
-
             for (int x = 0; x < GameBoardConstants.BOARD_HEIGHT; x++)
             {
                 for (int y = 0; y < GameBoardConstants.BOARD_WIDTH; y++)

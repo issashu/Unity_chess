@@ -1,10 +1,7 @@
-using System;
-using System.Linq;
 using Defines;
 using GamePieces;
-using Unity.Mathematics;
 using Utils;
-using Unity.VisualScripting;
+
 
 namespace AI
 {
@@ -16,8 +13,10 @@ namespace AI
         */
     public class DreadnoughtDecisionLogic : AIDecisionLogic
     {
+        /*-----------MEMBERS-------------------*/
         private BasePiece selectedUnit;
         
+        /*-----------METHODS-------------------*/
         public override void ExecuteUnitBehaviour(BasePiece dreadUnit)
         {
             if (dreadUnit == null)

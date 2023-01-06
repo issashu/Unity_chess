@@ -3,12 +3,16 @@ using UnityEngine;
 
 namespace GamePieces
 {
+
     public class HealthText : MonoBehaviour
     {
+        /*-----------MEMBERS-------------------*/
         private TextMeshPro _healthText;
 
         public TMP_Text CurrentHealthDisplay => _healthText;
+    
         
+        /*-----------METHODS-------------------*/
         private void Awake()
         {
             this._healthText = gameObject.AddComponent<TextMeshPro>();
@@ -26,7 +30,5 @@ namespace GamePieces
         {
             this._healthText.text = newTextValue;
         }
-        
-        
     }
 }

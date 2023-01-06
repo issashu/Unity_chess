@@ -1,17 +1,16 @@
-using System;
-
 namespace Defines
 {
     public struct SpawnMatrix
     {
         /*This would be best loaded from a predefined settings file (maybe json or csv), but just dumped here a hardcoded
          spawn Matrix for now. UGLY, but does the trick for the exercise*/
-        
-        
+     
+        /*-----------MEMBERS-------------------*/
         public static char[,] easyMatrix = new char[GameBoardConstants.BOARD_HEIGHT, GameBoardConstants.BOARD_WIDTH];
         public static char[,] normalMatrix = new char[GameBoardConstants.BOARD_HEIGHT, GameBoardConstants.BOARD_WIDTH];
         public static char[,] hardMatrix = new char[GameBoardConstants.BOARD_HEIGHT, GameBoardConstants.BOARD_WIDTH];
-
+        
+        /*-----------METHODS-------------------*/
         public static void InitialiseSpawnMatrix()
         {
             for (int i = 0; i < GameBoardConstants.BOARD_HEIGHT; i++)

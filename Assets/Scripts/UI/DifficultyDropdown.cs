@@ -1,14 +1,14 @@
 using System;
 using UnityEngine;
-using TMPro;
-using Unity.VisualScripting;
 
 namespace UI
 {
     public class DifficultyDropdown : MonoBehaviour
     {
+        /*-----------MEMBERS-------------------*/
         public static event EventHandler<int> OnDifficultySwitch;
         
+        /*-----------METHODS-------------------*/
         public void HandleDropdownSelection(int selection)
         {
             switch (selection)
@@ -25,9 +25,6 @@ namespace UI
                     OnDifficultySwitch?.Invoke(this, (int)Enums.GameDifficulty.Hard);
                     break;
             }
-            
         }
-
-
     }
 }

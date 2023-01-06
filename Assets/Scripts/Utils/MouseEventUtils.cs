@@ -11,16 +11,18 @@ namespace Utils
 {
     public class MouseEventUtils : MonoBehaviour
     {
+        /*-----------MEMBERS-------------------*/
         private static MouseEventUtils _instance;
         public static MouseEventUtils Instance => _instance;
         
-        
         private const int _leftMouseButton = 0;
+        
         private RaycastHit2D _target;
         private GameObject _selectedGamePiece;
         private GameBoard.GameBoard _gameBoardScript;
         private BasePiece _selectedGamePieceScript;
-
+        
+        /*-----------METHODS-------------------*/
         private void Start()
         {
             // Mostly sanity check, for clones
@@ -39,7 +41,6 @@ namespace Utils
         
         private void Update()
         {
-            // TODO Make it an event in some Manager
             if (Input.GetMouseButtonDown(_leftMouseButton))
             {
                 this._target = GetMouseRealTarget();
@@ -66,6 +67,7 @@ namespace Utils
 
         private void HandleSelectedObject(GameObject clickedObject)
         {
+            /*Some expensive calls to GetComponent, but could not go for static instance in this case ande cache...*/
             if (clickedObject is null)
                 return;
             
